@@ -109,25 +109,26 @@ exports.login = async (req, res) => {
 
   try {
     const queryText = `
-        SELECT
-            u.id_usuario,
-            u.identificacion,
-            u.nombre,
-            u.email,
-            r.nombre_rol,
-            s.nombre_sede
-        FROM
-            usuario u
-        INNER JOIN
-            rol r ON u.idrol = r.id_rol
-        INNER JOIN
-            sede s ON u.idsede = s.id_sede
-        WHERE
-            u.identificacion = $1
-            AND u.contrasenia = $2
-            AND u.idrol = $3
-            AND u.idsede = $4
-    `;
+    SELECT
+        u.id_usuario,
+        u.identificacion,
+        u.nombre,
+        u.email,
+        r.nombre_rol,
+        s.nombre_sede
+    FROM
+        usuario u
+    INNER JOIN
+        rol r ON u.idrol = r.id_rol
+    INNER JOIN
+        sede s ON u.idsede = s.id_sede
+    WHERE
+        u.identificacion = $1
+        AND u.contrasenia = $2
+        AND u.idrol = $3
+        AND u.idsede = $4
+`;
+
     const values = [username, password, rol, sede];
 
     const result = await client.query(queryText, values);

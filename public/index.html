@@ -28,17 +28,17 @@
       <form id="loginForm" method="POST" action="/auth/login">
         <div class="form-group">
           <span class="material-icons">person</span>
-          <input type="text" id="username" placeholder="Nombre de usuario" />
+          <input type="text" id="username" name="username" placeholder="Nombre de usuario" />
         </div>
 
         <div class="form-group">
           <span class="material-icons">lock</span>
-          <input type="password" id="password" placeholder="Contraseña" />
+          <input type="password" id="password" name="password" placeholder="Contraseña" />
         </div>
 
         <div class="form-group">
           <span class="material-icons">person_outline</span>
-          <select id="rol">
+          <select id="rol" name="rol">
             <option value="" disabled selected>Selecciona tu rol</option>
             <!--option value="administrador">Administrador</option>
                     <option value="cajero">Cajero</option>
@@ -48,16 +48,13 @@
 
         <div class="form-group">
           <span class="material-icons">location_on</span>
-          <select id="sede">
+          <select id="sede" name="sede">
             <option value="" disabled selected>Selecciona tu sede</option>
             <!--option value="chia">Chía</option>
                     <option value="usaquen">Usaquén</option-->
           </select>
         </div>
-        <p
-          id="errorMessage"
-          style="color: #e74c3c; display: none; margin-bottom: 10px"
-        ></p>
+        <p id="errorMessage" style="color: #e74c3c; display: none; margin-bottom: 10px"></p>
 
         <button type="submit">Acceder</button>
       </form>
