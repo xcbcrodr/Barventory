@@ -1,0 +1,114 @@
+/* =======================
+   Estilos Responsivos
+   ======================= */
+
+/* ========== Móviles ========== */
+/* Smartphones pequeños - Vertical */
+@media (max-width: 480px) and (orientation: portrait) {
+    .login-container {
+      width: 90%;
+      padding: 20px;
+    }
+  
+    form input,
+    form select,
+    form button {
+      width: 100%;
+    }
+  
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+  
+  /* Smartphones pequeños - Horizontal */
+  @media (max-width: 768px) and (orientation: landscape) {
+    .login-container {
+      width: 85%;
+      padding: 20px;
+    }
+  
+    form input,
+    form select,
+    form button {
+      width: 100%;
+    }
+  
+    img {
+      max-width: 80%;
+    }
+  }
+  
+  /* ========== Tablets ========== */
+  /* Tablets - Vertical */
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .login-container {
+      width: 70%;
+      padding: 25px;
+    }
+  
+    form input,
+    form select,
+    form button {
+      width: 100%;
+    }
+  }
+  
+  /* Tablets - Horizontal */
+  @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .login-container {
+      width: 60%;
+      padding: 25px;
+    }
+  
+    form input,
+    form select,
+    form button {
+      width: 100%;
+    }
+  }
+  
+  /* Tablets grandes (tipo Chromebook o pantallas amplias) - Horizontal */
+  @media (min-width: 1025px) and (max-width: 1366px) and (orientation: landscape) {
+    .login-container {
+      width: 50%;
+      padding: 30px;
+    }
+  
+    form input,
+    form select,
+    form button {
+      width: 100%;
+    }
+  }
+  
+  /* Tablets grandes - Vertical */
+  @media (min-width: 768px) and (max-width: 1366px) and (orientation: portrait) {
+    .login-container {
+      width: 65%;
+      padding: 30px;
+    }
+  
+    form input,
+    form select,
+    form button {
+      width: 100%;
+    }
+  }
+  
+  /* ========== Escritorio ========== */
+  /* Resoluciones Full HD o superiores */
+  @media (min-width: 1366px) {
+    .login-container {
+      width: 400px;
+      padding: 40px;
+    }
+  
+    form input,
+    form select,
+    form button {
+      width: 100%;
+    }
+  }
+  

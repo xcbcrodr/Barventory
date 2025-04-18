@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Bienvenido a Bar-ventory</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <!-- Fuente Roboto desde Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Íconos de Google Material Icons -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="login-container">
+      <h2>Bienvenido a Bar-ventory</h2>
+      <img src="img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+
+      <form id="loginForm" method="POST" action="/auth/login">
+        <div class="form-group">
+          <span class="material-icons">person</span>
+          <input type="text" id="username" placeholder="Nombre de usuario" />
+        </div>
+
+        <div class="form-group">
+          <span class="material-icons">lock</span>
+          <input type="password" id="password" placeholder="Contraseña" />
+        </div>
+
+        <div class="form-group">
+          <span class="material-icons">person_outline</span>
+          <select id="rol">
+            <option value="" disabled selected>Selecciona tu rol</option>
+            <!--option value="administrador">Administrador</option>
+                    <option value="cajero">Cajero</option>
+                    <option value="mesero">Mesero</option-->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <span class="material-icons">location_on</span>
+          <select id="sede">
+            <option value="" disabled selected>Selecciona tu sede</option>
+            <!--option value="chia">Chía</option>
+                    <option value="usaquen">Usaquén</option-->
+          </select>
+        </div>
+        <p
+          id="errorMessage"
+          style="color: #e74c3c; display: none; margin-bottom: 10px"
+        ></p>
+
+        <button type="submit">Acceder</button>
+      </form>
+    </div>
+
+    <script src="/js/login.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Fetch roles desde el backend
+        fetch("http://localhost:3000/auth/roles")
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Error al cargar roles");
+            }
+            return res.json();
+          })
+          .then((data) => {
+            const rolSelect = document.getElementById("rol");
+            while (rolSelect.options.length > 1) {
+              rolSelect.remove(1);
+            }
+            data.forEach((rol) => {
+              const option = document.createElement("option");
+              option.value = rol.id; // Use rol.id (id_rol de la DB) como value
+              option.textContent = rol.nombre; // Use rol.nombre (nombre_rol de la DB) como texto visible
+              rolSelect.appendChild(option);
+            });
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+            document.getElementById("errorMessage").textContent =
+              "Error al cargar roles";
+            document.getElementById("errorMessage").style.display = "block";
+          });
+
+        // Fetch sedes desde el backend
+        fetch("http://localhost:3000/auth/sedes")
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error("Error al cargar sedes");
+            }
+            return res.json();
+          })
+          .then((data) => {
+            const sedeSelect = document.getElementById("sede");
+            while (sedeSelect.options.length > 1) {
+              sedeSelect.remove(1);
+            }
+            data.forEach((sede) => {
+              const option = document.createElement("option");
+              option.value = sede.id; // Use sede.id (id_sede de la DB) como value
+              option.textContent = sede.nombre; // Use sede.nombre (nombre_sede de la DB) como texto visible
+              sedeSelect.appendChild(option);
+            });
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+            document.getElementById("errorMessage").textContent =
+              "Error al cargar sedes";
+            document.getElementById("errorMessage").style.display = "block";
+          });
+      });
+    </script>
+  </body>
+</html>
