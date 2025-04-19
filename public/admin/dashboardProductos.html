@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listado de Productos</title>
+
+    <!-- Estilos generales -->
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/responsive.css" />
+
+    <!-- Fuente Roboto -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Íconos Material -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="admin-bg">
+    <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+
+    <section class="container">
+      <h1 class="titulo-principal">Listado Productos</h1>
+
+      <!-- Imagen central -->
+      <div class="imagen-inventario">
+        <img src="../img/icono-productos.png" alt="Icono productos" />
+      </div>
+
+      <!-- Lista de productos luego implementado a nivel de bases de datos para mostrar información extraída en el front-->
+      <div class="producto">
+        <h3>Cerveza Coronita 250ml</h3>
+        <p>$4500</p>
+        <p>5 en inventario</p>
+        <div class="acciones">
+          <span class="material-icons eliminar">delete</span>
+          <span class="material-icons editar">edit</span>
+        </div>
+      </div>
+
+      <div class="producto">
+        <h3>Ron Bacardi 750ml</h3>
+        <p>$75000</p>
+        <p>2 en inventario</p>
+        <div class="acciones">
+          <span class="material-icons eliminar">delete</span>
+          <span class="material-icons editar">edit</span>
+        </div>
+      </div>
+
+      <div class="producto">
+        <h3>Ron Viejo de Caldas 1000ml</h3>
+        <p>$80000</p>
+        <p>1 en inventario</p>
+        <div class="acciones">
+          <span class="material-icons eliminar">delete</span>
+          <span class="material-icons editar">edit</span>
+        </div>
+      </div>
+
+      <!-- Botones al final -->
+      <div class="botones-acciones">
+        <button class="btn btn-crear">Crear Producto</button>
+        <button class="btn btn-cancelar">Cancelar</button>
+      </div>
+    </section>
+  </body>
+</html>
