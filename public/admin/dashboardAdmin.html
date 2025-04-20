@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administrador Bar-ventory</title>
+  <link rel="stylesheet" href="../css/dashboardAdmin.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Administrador Bar-ventory</h1>
+
+    <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar">
+
+    <div class="opciones">
+      <button class="opcion" onclick="verUsuarios()">
+        <img src="../img/Usuario.png" alt="Usuarios">
+        <h3>Usuarios</h3>
+        <p>Gestionar roles</p>
+      </button>
+
+      <button class="opcion" onclick="verSedes()">
+        <img src="../img/Sede.png" alt="Sedes">
+        <h3>Sedes</h3>
+        <p>Editar y eliminar</p>
+      </button>
+
+      <button class="opcion" onclick="verMesas()">
+        <img src="../img/Mesas.png" alt="Mesas">
+        <h3>Mesas</h3>
+        <p>Control de disponibilidad</p>
+      </button>
+
+      <button class="opcion" onclick="verInventario()">
+        <img src="../img/Inventario.webp" alt="Inventario">
+        <h3>Inventario</h3>
+        <p>Agregar, modificar y listar productos</p>
+      </button>
+    </div>
+
+    <button class="salir" onclick="salir()">Salir</button>
+  </div>
+
+  <script src="../js/dashboardAdmin.js"></script>
+</body>
+</html>

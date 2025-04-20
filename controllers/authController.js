@@ -158,7 +158,7 @@ exports.login = async (req, res) => {
           rol: user.nombre_rol,
           sede: user.nombre_sede,
         },
-        redirectUrl: `/${user.nombre_rol.toLowerCase()}/dashboard.html`,
+        redirectUrl: `/${user.nombre_rol.toLowerCase()}/dashboardAdmin.html`,
       });
     } else {
       res.status(401).json({ error: "Credenciales incorrectas" });
