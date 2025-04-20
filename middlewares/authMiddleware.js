@@ -20,6 +20,7 @@ const authenticateToken = async (req, res, next) => {
     if (user.rows.length === 0) return res.sendStatus(403);
 
     req.user = user.rows[0];
+    console.log(req.user)
     next();
   } catch (err) {
     console.error('Error en autenticación:', err);
@@ -29,7 +30,8 @@ const authenticateToken = async (req, res, next) => {
 
 const checkRole = (roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.rol)) {
+    const userRole = req.user.rol;
+    if (!roles.includes(userRole)) {
       return res.status(403).json({ error: 'Acceso no autorizado para este rol' });
     }
     next();
