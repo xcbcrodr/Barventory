@@ -52,8 +52,17 @@ exports.getProfile = async (req, res) => {
   }
 };
 
+/* Código implementado luego de modificación realizada
+req.user = {
+  id: user.rows[0].id_usuario,
+  identificacion: user.rows[0].identificacion,
+  nombre: user.rows[0].nombre,
+  email: user.rows[0].email,
+  rol: user.rows[0].nombre_rol, // nombre real del rol
+};*/
+
 // Dashboard de administrador (protegido + checkRole)
-exports.adminDashboard = async (req, res) => {
+/*exports.adminDashboard = async (req, res) => {
   try {
     // Solo accesible para administradores (el middleware checkRole ya verificó esto)
     res.json({
@@ -65,6 +74,18 @@ exports.adminDashboard = async (req, res) => {
     });
   } catch (err) {
     console.error("Error en dashboard admin:", err);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};*/
+
+const path = require("path"); // Añade al inicio del archivo
+
+exports.adminDashboard = (req, res) => {
+  try {
+    // Envía el archivo HTML estático
+    res.sendFile(path.join(__dirname, "../admin/dashboardAdmin.html"));
+  } catch (err) {
+    console.error("Error al cargar el dashboard:", err);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -158,7 +179,7 @@ exports.login = async (req, res) => {
           rol: user.nombre_rol,
           sede: user.nombre_sede,
         },
-        redirectUrl: `/${user.nombre_rol.toLowerCase()}/dashboardAdmin.html`,
+        redirectUrl: `/admin/dashboardAdmin.html`, // Coincide con la ruta en authRoutes.js
       });
     } else {
       res.status(401).json({ error: "Credenciales incorrectas" });

@@ -10,6 +10,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/public')));
+app.use('/admin', express.static(path.join(__dirname, 'admin'))); 
 app.use(cors()); // Habilita CORS para permitir peticiones desde tu frontend
 
 // ===== 2. MIDDLEWARES PERSONALIZADOS =====

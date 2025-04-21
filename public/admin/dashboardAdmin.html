@@ -1,40 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Administrador Bar-ventory</title>
-  <link rel="stylesheet" href="../css/dashboardAdmin.css">
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+  <!-- Fuente Roboto desde Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
+
 <body>
   <div class="container">
-    <h1>Administrador Bar-ventory</h1>
+    <h1>Bienvenido Administrador , <span id="usuarioNombre"></span></h1>
 
-    <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar">
+    <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
     <div class="opciones">
       <button class="opcion" onclick="verUsuarios()">
-        <img src="../img/Usuario.png" alt="Usuarios">
+        <span class="material-icons">person</span>
         <h3>Usuarios</h3>
-        <p>Gestionar roles</p>
+        <p>Gestión de roles y usuarios</p>
       </button>
 
       <button class="opcion" onclick="verSedes()">
-        <img src="../img/Sede.png" alt="Sedes">
+        <span class="material-icons">store</span>
         <h3>Sedes</h3>
-        <p>Editar y eliminar</p>
+        <p>Consultar, editar y eliminar sedes</p>
       </button>
 
       <button class="opcion" onclick="verMesas()">
-        <img src="../img/Mesas.png" alt="Mesas">
+        <span class="material-icons">event_seat</span>
         <h3>Mesas</h3>
         <p>Control de disponibilidad</p>
       </button>
 
       <button class="opcion" onclick="verInventario()">
-        <img src="../img/Inventario.webp" alt="Inventario">
+        <span class="material-icons">local_drink</span>
         <h3>Inventario</h3>
-        <p>Agregar, modificar y listar productos</p>
+        <p>Añadir, modificar y listar productos</p>
       </button>
     </div>
 
@@ -42,5 +48,22 @@
   </div>
 
   <script src="../js/dashboardAdmin.js"></script>
+
+  <script>
+    document.getElementById("usuarioNombre").textContent =
+      localStorage.getItem("nombreUsuario") || "Usuario";
+  </script>
+
+  <!-- Código experimental para comprobar que funcione el acceso restringido a un usuario directamente al HTML-->
+  <script>
+    const token = localStorage.getItem("token");
+    const rol = localStorage.getItem("rol");
+
+    /*if (!token || rol !== "Administrador") {
+      alert("Acceso denegado. No tienes permiso para estar aquí.");
+      window.location.href = "/index.html"; // 
+    }*/
+  </script>
 </body>
+
 </html>
