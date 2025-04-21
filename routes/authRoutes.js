@@ -15,6 +15,8 @@ if (!authController.getRoles || typeof authController.getRoles !== 'function') {
 if (!authController.getSedes || typeof authController.getSedes !== 'function') {
   throw new Error('authController.getSedes no es una función válida');
 }
+
+// If que se recomienda quitar para paso a producción
 if (!authController.getProfile || typeof authController.getProfile !== 'function') {
   throw new Error('authController.getProfile no es una función válida');
 }
@@ -34,8 +36,10 @@ router.get('/sedes', authController.getSedes);
 router.use(authenticateToken);
 
 router.get('/profile', authController.getProfile);
-router.get('/admin/dashboard', checkRole(['admin', 'administrador']), authController.adminDashboard);
+//router.get('/admin/dashboard', checkRole(['admin']), authController.adminDashboard);
+router.get('/admin/dashboardAdmin.html', checkRole(['Administrador']), authController.adminDashboard);
 router.get('/cajero/dashboard', checkRole(['cajero']), authController.cashierDashboard);
 // router.get('/mesero/dashboard', checkRole(['mesero']), authController.waitressDashboard); se implementara para cuando se confirme que este bien el desarrollo de los middlewares
 
 module.exports = router;
+
