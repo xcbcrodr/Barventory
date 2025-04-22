@@ -4,43 +4,51 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestión de Sedes</title>
+    <title>Módulo de Sedes</title>
     <link rel="stylesheet" href="../css/SedesActuales.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script defer src="../js/SedesActuales.js"></script>
 </head>
 
 <body>
-    <div class="usuarios-container">
-        <div class="header">
-            <div class="titulo-logo">
-                <img src="../img/Logo Bar-ventory.jpg" alt="Logo" class="logo">
-                <h2>Gestión de Sedes</h2>
-            </div>
-            <button class="btn-nuevo" onclick="window.location.href='../admin/NuevaSede.html'">
-                Agregar Sede
+    <div class="sedes-container">
+        <h1 class="titulo-centrado">Gestión de Sedes</h1>
+
+        <div class="logo-container">
+            <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
+        </div>
+
+        <div class="controles-superiores">
+            <button class="btn-nuevo" id="btnAgregarSede" onclick="window.location.href='../admin/NuevaSede.html'">
+                <span class="material-icons">add</span> Agregar Sede
             </button>
+
+            <div class="buscador">
+                <span class="material-icons">search</span>
+                <input type="text" id="buscarSede" placeholder="Buscar sede..." />
+            </div>
         </div>
 
-        <div class="filtros">
-            <input type="text" id="buscarSede" placeholder="🔍 Buscar sede..." />
+        <div class="tabla-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaSedes">
+                </tbody>
+            </table>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Dirección</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tablaSedes">
-                <!-- Las filas de las sedes se agregarán aquí dinámicamente -->
-            </tbody>
-        </table>
-
-        <div class="botonvolver">
+        <div class="boton-volver">
             <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
-                Volver
+                <span class="material-icons">arrow_back</span> Volver
             </button>
         </div>
     </div>

@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crear Nueva Sede</title>
-  <link rel="stylesheet" href="../css/NuevaSede.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Crear Nueva Sede</title>
+    <link rel="stylesheet" href="../css/NuevaSede.css">
 </head>
 <body>
-  <div class="form-container">
-  
-    <img src="../img/Logo Bar-ventory.jpg" alt="Logo" />
+    <div class="form-container">
 
-    <h1>Crear Nueva Sede</h1>
+      <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
-    <form id="sedeForm">
-      <label for="nombre">Nombre</label>
-      <input type="text" id="nombre" name="nombre" required />
+        <h1>Crear Nueva Sede</h1>
 
-      <label for="direccion">Dirección</label>
-      <input type="text" id="direccion" name="direccion" required />
+        <form id="sedeForm">
+            <div>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre"/>
+                <div class="error-message" id="error-nombre"></div>
+            </div>
 
-      <div class="buttons">
-        <button type="submit">Crear Sede</button>
-        <button type="button" onclick="volver()">Volver</button>
-      </div>
-    </form>
-  </div>
+            <div>
+                <label for="direccion">Dirección</label>
+                <input type="text" id="direccion" name="direccion" />
+                <div class="error-message" id="error-direccion"></div>
+            </div>
 
-  <script src="../js/NuevaSede.js"></script>
+            <div class="buttons">
+                <button type="submit">Crear Sede</button>
+                <button type="button" onclick="volver()">Volver</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="../js/NuevaSede.js"></script>
 </body>
 </html>

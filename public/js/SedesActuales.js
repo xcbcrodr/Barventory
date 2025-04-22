@@ -1,95 +1,104 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Obtener las sedes desde el servidor
-  fetch("http://localhost:3000/sedes")
-    .then((response) => response.json())
-    .then((data) => {
-      const tablaSedes = document.getElementById("tablaSedes");
-      const buscarSedeInput = document.getElementById("buscarSede");
+    const API_URL = "http://localhost:3000/auth/sedes";
+    const tablaSedes = document.getElementById("tablaSedes");
+    const sedesContainer = document.querySelector('.sedes-container');
 
-      // Función para mostrar las sedes en la tabla
-      function mostrarSedes(sedes) {
-        tablaSedes.innerHTML = ""; // Limpiar la tabla antes de agregar las nuevas filas
-        sedes.forEach((sede) => {
-          const fila = document.createElement("tr");
-          fila.id = `sede-${sede.id_sede}`; // Asignar un ID único a cada fila
+    function mostrarMensaje(mensaje, esError = false) {
+        const mensajeElement = document.createElement('div');
+        mensajeElement.className = esError ? 'error-mensaje' : 'info-mensaje';
+        mensajeElement.textContent = mensaje;
+        const mensajeAnterior = sedesContainer.querySelector('.error-mensaje, .info-mensaje');
+        if (mensajeAnterior) mensajeAnterior.remove();
+        sedesContainer.prepend(mensajeElement);
+    }
 
-          const celdaNombre = document.createElement("td");
-          celdaNombre.textContent = sede.nombre_sede;
+    function crearFilaSede(sede) {
+        return `
+            <tr id="sede-${sede.id}">
+                <td>${sede.nombre}</td>
+                <td>${sede.direccion || 'Sin dirección' }</td>
+                <td>
+                    <button class="btn-editar" data-id="${sede.id}">✏️ Editar</button>
+                    <button class="btn-eliminar" data-id="${sede.id}">🗑️ Eliminar</button>
+                </td>
+            </tr>
+        `;
+    }
 
-          const celdaDireccion = document.createElement("td");
-          celdaDireccion.textContent = sede.direccion;
+    async function cargarSedes() {
+        //mostrarMensaje("Cargando sedes...", false);
+        try {
+            const response = await fetch(API_URL, {
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                }
+            });
 
-          const celdaAcciones = document.createElement("td");
-          const botonEditar = document.createElement("button");
-          botonEditar.textContent = "✏️";
-          botonEditar.classList.add("btn-editar");
-          botonEditar.onclick = function () {
-            // Redirigir a la página de edición de sede
-            window.location.href = `EditarSede.html?id=${sede.id_sede}`;
-          };
+            if (!response.ok) {
+                throw new Error(`Error ${response.status}: ${response.statusText}`);
+            }
 
-          const botonEliminar = document.createElement("button");
-          botonEliminar.textContent = "🗑️";
-          botonEliminar.classList.add("btn-eliminar");
-          botonEliminar.onclick = function () {
-            eliminarSede(sede.id_sede);
-          };
+            const sedes = await response.json(); // La respuesta es directamente el array
+            console.log("Datos recibidos de la API:", sedes);
 
-          celdaAcciones.appendChild(botonEditar);
-          celdaAcciones.appendChild(botonEliminar);
+            if (!sedes || sedes.length === 0) {
+                mostrarMensaje("No hay sedes registradas.");
+                tablaSedes.innerHTML = '<tr><td colspan="3">No se encontraron sedes</td></tr>';
+                return;
+            }
 
-          fila.appendChild(celdaNombre);
-          fila.appendChild(celdaDireccion);
-          fila.appendChild(celdaAcciones);
-
-          tablaSedes.appendChild(fila);
-        });
-      }
-
-      // Mostrar todas las sedes inicialmente
-      mostrarSedes(data);
-
-      // Función de filtro para buscar sedes
-      buscarSedeInput.addEventListener("input", function () {
-        const searchTerm = buscarSedeInput.value.toLowerCase();
-
-        // Filtrar las sedes que coincidan con el término de búsqueda
-        const filteredSedes = data.filter((sede) => {
-          return (
-            sede.nombre_sede.toLowerCase().includes(searchTerm) ||
-            sede.direccion.toLowerCase().includes(searchTerm)
-          );
-        });
-
-        // Mostrar las sedes filtradas
-        mostrarSedes(filteredSedes);
-      });
-    })
-    .catch((error) => {
-      console.error("Error al cargar las sedes:", error);
-    });
-});
-
-function eliminarSede(id_sede) {
-  console.log("Eliminando sede con ID:", id_sede);
-  const confirmar = confirm("¿Estás seguro de que deseas eliminar esta sede?");
-
-  if (confirmar) {
-    fetch(`http://localhost:3000/sedes/${id_sede}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Respuesta del servidor:", data);
-        alert(data.message);
-        if (data.message === "Sede eliminada correctamente") {
-          const fila = document.querySelector(`#sede-${id_sede}`);
-          if (fila) fila.remove();
+            mostrarSedes(sedes);
+        } catch (error) {
+            console.error("Error al cargar sedes:", error);
+            mostrarMensaje(`Error al cargar sedes: ${error.message}`, true);
+            tablaSedes.innerHTML = '<tr><td colspan="3">Error al cargar datos</td></tr>';
         }
-      })
-      .catch((error) => {
-        console.error("Error al eliminar la sede:", error);
-        alert("Hubo un error al eliminar la sede.");
-      });
-  }
-}
+    }
+
+    function mostrarSedes(sedes) {
+        tablaSedes.innerHTML = sedes.map(crearFilaSede).join('');
+
+        tablaSedes.addEventListener('click', async (event) => {
+            const target = event.target;
+            const idSede = target.dataset.id;
+
+            if (target.classList.contains('btn-editar')) {
+                window.location.href = `EditarSede.html?id=${idSede}`;
+            } else if (target.classList.contains('btn-eliminar')) {
+                if (confirm('¿Estás seguro de eliminar esta sede?')) {
+                    await eliminarSede(idSede);
+                }
+            }
+        });
+    }
+
+    async function eliminarSede(id) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                const errorMessage = errorData?.message || 'Error al eliminar la sede';
+                throw new Error(errorMessage);
+            }
+
+            mostrarMensaje('Sede eliminada correctamente');
+            const filaEliminada = document.getElementById(`sede-${id}`);
+            if (filaEliminada) {
+                filaEliminada.remove();
+            } else {
+                cargarSedes();
+            }
+        } catch (error) {
+            console.error("Error al eliminar:", error);
+            mostrarMensaje(`Error al eliminar sede: ${error.message}`, true);
+        }
+    }
+
+    cargarSedes();
+});

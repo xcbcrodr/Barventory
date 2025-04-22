@@ -1,24 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Editar Sede</title>
     <link rel="stylesheet" href="../css/NuevaSede.css">
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <!-- Fuente Roboto desde Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
+
 <body>
     <div class="form-container">
 
-        <img src="../img/Logo Bar-ventory.jpg" alt="Logo" />
+        <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
         <h1>Editar Sede</h1>
 
         <form id="formularioEditar">
-            <label for="nombre_sede">Nombre</label>
-            <input type="text" id="nombre_sede" name="nombre" required />
+            <div>
+                <label for="nombre_sede">Nombre</label>
+                <input type="text" id="nombre_sede" name="nombre" required />
+                <div class="error-message" id="error-nombre_sede"></div>
+            </div>
 
-            <label for="direccion">Dirección</label>
-            <input type="text" id="direccion" name="direccion" required />
+            <div>
+                <label for="direccion">Dirección</label>
+                <input type="text" id="direccion" name="direccion" required />
+                <div class="error-message" id="error-direccion"></div>
+            </div>
 
             <div class="buttons">
                 <button type="submit">Guardar Cambios</button>
@@ -29,4 +42,5 @@
 
     <script src="../js/EditarSede.js"></script>
 </body>
+
 </html>
