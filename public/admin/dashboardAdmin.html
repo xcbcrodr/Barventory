@@ -14,37 +14,37 @@
 
 <body>
   <div class="container">
-    <h1>Bienvenido Administrador , <span id="usuarioNombre"></span></h1>
+    <h1>Bienvenido Administrador <span id="usuarioNombre"></span></h1>
 
     <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
     <div class="opciones">
-      <button class="opcion" onclick="verUsuarios()">
+      <button class="opcion" id="btnUsuarios">
         <span class="material-icons">person</span>
         <h3>Usuarios</h3>
         <p>Gestión de roles y usuarios</p>
       </button>
 
-      <button class="opcion" onclick="verSedes()">
+      <button class="opcion" id="btnSedes">
         <span class="material-icons">store</span>
         <h3>Sedes</h3>
         <p>Consultar, editar y eliminar sedes</p>
       </button>
 
-      <button class="opcion" onclick="verMesas()">
+      <button class="opcion" id="btnMesas">
         <span class="material-icons">event_seat</span>
         <h3>Mesas</h3>
         <p>Control de disponibilidad</p>
       </button>
 
-      <button class="opcion" onclick="verInventario()">
+      <button class="opcion" id="btnInventario">
         <span class="material-icons">local_drink</span>
         <h3>Inventario</h3>
         <p>Añadir, modificar y listar productos</p>
       </button>
     </div>
 
-    <button class="salir" onclick="salir()">Salir</button>
+    <button class="salir" id="btnSalir">Salir</button>
   </div>
 
   <script src="../js/dashboardAdmin.js"></script>

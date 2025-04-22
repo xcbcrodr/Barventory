@@ -1,0 +1,127 @@
+.usuarios-container {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: auto;
+    background-color: #fff9f9;
+    border-radius: 10px;
+   
+}
+
+.botonvolver {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 30px; /* <-- Esto lo baja */
+}
+
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    color: #b8740b;
+}
+
+.btn-nuevo {
+    background-color: #b8740b;
+    color: rgb(255, 255, 255);
+    border: 2px solid #c57a09;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-nuevo:hover {
+    background-color: #a06108;
+    
+}
+
+.filtros {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  
+}
+
+.filtros input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate; /* Usa "separate" para respetar el border-radius */
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border: 2px solid #000; /* Borde exterior */
+}
+
+thead {
+    background-color: #ffffff;
+}
+
+th, td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #000; /* línea horizontal interna */
+}
+
+th:last-child,
+td:last-child {
+    border-right: none; /* evita doble borde al final */
+}
+
+td {
+    border-right: 1px solid #000; /* línea vertical interna */
+}
+tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.btn-editar {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.btn-eliminar {
+    background-color: #f44336;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+body {
+    background-color: #b8740b; 
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+.titulo-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* espacio entre el logo y el texto */
+}
+
+.logo {
+    width: 90px;
+    height: auto;
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crear Nueva Sede</title>
+  <link rel="stylesheet" href="../css/NuevaSede.css">
+</head>
+<body>
+  <div class="form-container">
+  
+    <img src="../img/Logo Bar-ventory.jpg" alt="Logo" />
+
+    <h1>Crear Nueva Sede</h1>
+
+    <form id="sedeForm">
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" name="nombre" required />
+
+      <label for="direccion">Dirección</label>
+      <input type="text" id="direccion" name="direccion" required />
+
+      <div class="buttons">
+        <button type="submit">Crear Sede</button>
+        <button type="button" onclick="volver()">Volver</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="../js/NuevaSede.js"></script>
+</body>
+</html>

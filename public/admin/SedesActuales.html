@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Sedes</title>
+    <link rel="stylesheet" href="../css/SedesActuales.css" />
+    <script defer src="../js/SedesActuales.js"></script>
+</head>
+
+<body>
+    <div class="usuarios-container">
+        <div class="header">
+            <div class="titulo-logo">
+                <img src="../img/Logo Bar-ventory.jpg" alt="Logo" class="logo">
+                <h2>Gestión de Sedes</h2>
+            </div>
+            <button class="btn-nuevo" onclick="window.location.href='../admin/NuevaSede.html'">
+                Agregar Sede
+            </button>
+        </div>
+
+        <div class="filtros">
+            <input type="text" id="buscarSede" placeholder="🔍 Buscar sede..." />
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaSedes">
+                <!-- Las filas de las sedes se agregarán aquí dinámicamente -->
+            </tbody>
+        </table>
+
+        <div class="botonvolver">
+            <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
+                Volver
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>
