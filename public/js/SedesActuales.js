@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const API_URL = "http://localhost:3000/auth/sedes";
     const tablaSedes = document.getElementById("tablaSedes");
-    const sedesContainer = document.querySelector('.sedes-container');
+    //const sedesContainer = document.querySelector('.sedes-container');
 
     function mostrarMensaje(mensaje, esError = false) {
         const mensajeElement = document.createElement('div');
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return `
             <tr id="sede-${sede.id}">
                 <td>${sede.nombre}</td>
-                <td>${sede.direccion || 'Sin dirección' }</td>
+                <td>${sede.direccion || "Avenida falsa 6 g este 30 89, Chia"}</td>
                 <td>
                     <button class="btn-editar" data-id="${sede.id}">✏️ Editar</button>
                     <button class="btn-eliminar" data-id="${sede.id}">🗑️ Eliminar</button>
@@ -30,23 +30,25 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch(API_URL, {
                 headers: {
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                }
+                    "Authorization": `Bearer ${localStorage.getItem("token")}` }
             });
-
+            const sedes = await response.json();
+            /*console.log("Datos recibidos:", sedes);  // ← Verifica aquí los campos
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
 
-            const sedes = await response.json(); // La respuesta es directamente el array
-            console.log("Datos recibidos de la API:", sedes);
+            const sedes = await response.json(); 
+            // La respuesta es directamente el array
+            console.table(sedes);
+
 
             if (!sedes || sedes.length === 0) {
                 mostrarMensaje("No hay sedes registradas.");
                 tablaSedes.innerHTML = '<tr><td colspan="3">No se encontraron sedes</td></tr>';
                 return;
             }
-
+*/
             mostrarSedes(sedes);
         } catch (error) {
             console.error("Error al cargar sedes:", error);
@@ -72,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    async function eliminarSede(id) {
+    async function eliminarSede(id, botonEliminar) {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
@@ -80,25 +82,26 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Authorization": `Bearer ${localStorage.getItem("token")}`
                 }
             });
-
+    
             if (!response.ok) {
                 const errorData = await response.json();
-                const errorMessage = errorData?.message || 'Error al eliminar la sede';
+                const errorMessage = errorData?.error || 'Error al eliminar la sede';
                 throw new Error(errorMessage);
             }
-
+    
             mostrarMensaje('Sede eliminada correctamente');
-            const filaEliminada = document.getElementById(`sede-${id}`);
+    
+            // Encuentra la fila del botón
+            const filaEliminada = botonEliminar.closest("tr");
             if (filaEliminada) {
-                filaEliminada.remove();
-            } else {
-                cargarSedes();
+                filaEliminada.classList.add('fade-out');
+                setTimeout(() => filaEliminada.remove(), 300);
             }
         } catch (error) {
             console.error("Error al eliminar:", error);
             mostrarMensaje(`Error al eliminar sede: ${error.message}`, true);
         }
     }
-
+    
     cargarSedes();
 });

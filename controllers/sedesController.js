@@ -12,32 +12,28 @@ const handleDbError = (error, res, action = "procesar la solicitud") => {
 
 // ===== OBTENER TODAS LAS SEDES =====
 exports.obtenerTodasSedes = async (req, res) => {
-    try {
-      const query = `  
-        SELECT 
-          Sede.id_sede, 
-          Sede.nombre_sede, 
-          Direccion.direccion AS direccion
-        FROM Sede
-        LEFT JOIN Direccion ON Sede.id_direccion = Direccion.id_direccion
+  try {
+    const query = `  
+        SELECT id_sede AS id, nombre_sede AS nombre, 
+        direction AS direccion 
+        FROM sede;
       `;
-  
-      const result = await client.query(query); 
-  
-      console.log("Filas obtenidas de la base de datos:", result.rows);
-  
-      const sedesConDireccion = result.rows.map((row) => ({
-        id: row.id_sede,
-        nombre: row.nombre_sede,
-        direccion: row.direccion,
-      }));
-  
-      res.json(sedesConDireccion);
-    } catch (error) {
-      handleDbError(error, res, "obtener las sedes");
-    }
-  };
-  
+
+    const result = await client.query(query);
+
+    console.log("Filas obtenidas de la base de datos:", result.rows);
+
+    res.json(result.rows);
+
+    /*const sedesConDireccion = result.rows.map((row) => ({
+      id: row.id_sede,
+      nombre: row.nombre_sede,
+      direccion: row.direccion,
+    }));*/
+  } catch (error) {
+    handleDbError(error, res, "obtener las sedes");
+  }
+};
 
 // ===== OBTENER UNA SEDE POR ID =====
 exports.obtenerSedePorId = async (req, res) => {

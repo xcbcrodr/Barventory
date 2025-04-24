@@ -5,58 +5,54 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Listado de Productos</title>
-
-  <!-- Estilos generales -->
   <link rel="stylesheet" href="../css/styles.css" />
   <link rel="stylesheet" href="../css/responsive.css" />
-  <link rel="stylesheet" href="../css/SedesActuales.css" />
-  <!-- Fuente Roboto desde Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <!-- Íconos de Google Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
 </head>
 
 <body>
-  <div class="sedes-container">
-    <h1 class="titulo-centrado">Listado de productos</h1>
+  <div class="container"> <div class="productos-container">
+      <h1 class="titulo-centrado">Listado de productos</h1>
 
-    <div class="logo-container">
-      <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
-    </div>
-
-    <div class="controles-superiores">
-      <button class="btn-nuevo" id="btnAgregarProducto" onclick="window.location.href='../admin/NuevaProducto.html'">
-        <span class="material-icons">add</span> Agregar Producto
-      </button>
-
-      <div class="buscador">
-        <span class="material-icons">search</span>
-        <input type="text" id="buscarProducto" placeholder="Buscar producto..." />
+      <div class="logo-container">
+        <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
       </div>
-    </div>
 
-    <div class="tabla-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Precio Venta</th>
-            <th>Cantidad</th>
-            <th>Proveedor</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tablaProducto">
-        </tbody>
-      </table>
-    </div>
+      <div class="controles-superiores">
+        <button class="btn-nuevo" id="btnAgregarProducto" onclick="window.location.href='../admin/NuevaProducto.html'">
+          <span class="material-icons">add</span> Agregar Producto
+        </button>
 
-    <div class="boton-volver">
-      <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
-        <span class="material-icons">arrow_back</span> Volver
-      </button>
+        <div class="buscador">
+          <span class="material-icons">search</span>
+          <input type="text" id="buscarProducto" placeholder="Buscar producto..." />
+        </div>
+      </div>
+
+      <div class="tabla-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Precio Venta</th>
+              <th>Cantidad</th>
+              <th>Proveedor</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaProducto">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="boton-volver">
+        <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
+          <span class="material-icons">arrow_back</span> Volver
+        </button>
+      </div>
     </div>
   </div>
 </body>

@@ -6,6 +6,7 @@ const cors = require('cors'); // Importa el middleware CORS
 const authRoutes = require('./routes/authRoutes'); // Ajusta la ruta si es necesario
 const sedesRoutes = require('./routes/sedesRoutes'); // Importa las rutas de sedes
 
+//app.use("/auth", sedesRoutes); // Todas las rutas de sedes tendrán /auth
 const app = express();
 
 // ===== 1. MIDDLEWARES BÁSICOS (SIEMPRE AL INICIO) =====
@@ -17,7 +18,6 @@ app.use(cors()); // Habilita CORS para permitir peticiones desde tu frontend
 app.use(express.json());
 
 // ===== 2. MIDDLEWARES PERSONALIZADOS =====
-// (Opcional) Logger de solicitudes
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
     next();
@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 // ===== 3. RUTAS PRINCIPALES =====
 app.use('/auth', authRoutes);
 app.use('/auth/sedes', sedesRoutes);
+
 
 // ===== 3.1. RUTA PARA LA RAÍZ ("/") =====
 app.get('/', (req, res) => {
