@@ -7,14 +7,13 @@
   <title>Administrador Bar-ventory</title>
   <link rel="stylesheet" href="../css/styles.css" />
   <link rel="stylesheet" href="../css/responsive.css" />
-  <!-- Fuente Roboto desde Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
   <div class="container">
-    
+    <h1 class="titulo-centrado">Módulo Administración</h1>
     <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
     <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
     <div class="opciones">
@@ -44,10 +43,6 @@
     </div>
 
     <button class="salir" id="btnSalir">Salir</button>
-
-   
-  </div>
-
   </div>
 
   <script src="../js/dashboardAdmin.js"></script>
@@ -57,7 +52,6 @@
       localStorage.getItem("nombreUsuario") || "Usuario";
   </script>
 
-  <!-- Código experimental para comprobar que funcione el acceso restringido a un usuario directamente al HTML-->
   <script>
     const token = localStorage.getItem("token");
     const rol = localStorage.getItem("rol");

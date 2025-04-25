@@ -13,7 +13,9 @@
 </head>
 
 <body>
-  <div class="container"> <div class="productos-container">
+
+  <div class="container">
+    <div class="productos-container">
       <h1 class="titulo-centrado">Listado de productos</h1>
 
       <div class="logo-container">
@@ -21,13 +23,21 @@
       </div>
 
       <div class="controles-superiores">
-        <button class="btn-nuevo" id="btnAgregarProducto" onclick="window.location.href='../admin/NuevaProducto.html'">
+        <button class="btn-nuevo">
           <span class="material-icons">add</span> Agregar Producto
         </button>
-
+        <!--div class="selector-sede">
+          <span class="material-icons">location_on</span>
+          <select id="sede" name="sede">
+            <option value="" disabled selected>Selecciona sede</option>
+            <option value="chia">Chía</option>
+            <option value="cota">Cota</option>
+            <option value="zonat">Zona T</option>
+          </select>
+        </div-->
         <div class="buscador">
           <span class="material-icons">search</span>
-          <input type="text" id="buscarProducto" placeholder="Buscar producto..." />
+          <input type="text" placeholder="Buscar producto...">
         </div>
       </div>
 
@@ -44,6 +54,30 @@
             </tr>
           </thead>
           <tbody id="tablaProducto">
+            <tr>
+              <td>Cerveza Poker 350ml</td>
+              <td>$3.500</td>
+              <td>$4.500</td>
+              <td>40</td>
+              <td>Bavaria</td>
+              <td>Editar | Eliminar</td>
+            </tr>
+            <tr>
+              <td>Cerveza Lager 350ml</td>
+              <td>$3.000</td>
+              <td>$4.000</td>
+              <td>20</td>
+              <td>Jager Ltda</td>
+              <td>Editar | Eliminar</td>
+            </tr>
+            <tr>
+              <td>Cerveza Andina</td>
+              <td>$3.000</td>
+              <td>$4.000</td>
+              <td>10</td>
+              <td>Angina y Asociados</td>
+              <td>Editar | Eliminar</td>
+            </tr>
           </tbody>
         </table>
       </div>

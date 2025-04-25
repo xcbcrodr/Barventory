@@ -6,6 +6,10 @@ body {
   /* fondo tipo cerveza */
 }
 
+h1{
+  padding: 40px;
+}
+
 .fade-out {
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -13,11 +17,13 @@ body {
 
 .container {
   max-width: 800px;
-  /* Ajusta el ancho máximo según necesites */
+  /* Define un ancho máximo razonable para el contenido */
+  width: 90%;
+  /* Permite que el contenedor ocupe un porcentaje del ancho de la pantalla en dispositivos más pequeños */
   margin: 20px auto;
+  /* Centra horizontalmente y añade margen vertical */
   padding: 20px;
   background-color: #c28717;
-  /* Similar al login container */
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -27,79 +33,72 @@ body {
   margin-bottom: 40px;
 }
 
-.sedes-container, .productos-container, .usuarios-container {
-  max-width: 700px; 
+.sedes-container,
+.productos-container,
+.usuarios-container {
+  max-width: 700px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* ---------------------------- */
+/* ------------- ESTILOS DE TABLA Y CONTAINER DE PRODUCTOS --------------- */
 
-.btn-nuevo {
-  background-color: #3498D8;
-  color: rgb(255, 255, 255);
-  border: 2px solid #c57a09;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.filtros {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-
-}
-
-table {
-  width: 100%;
-  border-collapse: separate; /* Para respetar border-radius */
-  border-spacing: 0;
-  background: #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  border: 2px solid #000; /* Borde exterior */
-  table-layout: auto; /* Asegúrate de que esté en auto */
-}
-
-th, td {
-  padding: 8px 10px; /* Reduce el padding vertical y horizontal */
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-tbody tr:last-child td {
-  border-bottom: none; /* Quita el borde de la última fila */
-}
-
-/* Título centrado */
-.titulo-centrado {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 2rem;
-}
-
-/* Logo centrado */
-.logo-container {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-/* Controles superiores */
 .controles-superiores {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: flex-start; /* Alinea los contenedores izquierda y derecha verticalmente */
   margin-bottom: 20px;
-  flex-wrap: wrap;
   gap: 15px;
+  flex-wrap: wrap;
+  justify-content: space-between; /* Espacio entre la izquierda y la derecha */
+}
+
+.controles-superiores .derecha {
+  display: flex;
+  flex-direction: column; /* Apila el selector y el buscador verticalmente */
+  align-items: flex-end; /* Alinea el selector y el buscador a la derecha */
+  gap: 10px; /* Espacio entre el selector y el buscador */
+}
+
+.controles-superiores .btn-nuevo {
+  /* Mantiene tus estilos existentes para el botón */
+  height: 40px; /* Asegura una altura definida para la alineación */
+}
+
+.controles-superiores .selector-sede {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: fit-content; /* Ajusta el ancho al contenido */
+}
+
+.controles-superiores .selector-sede .material-icons {
+  color: #777;
+  margin-right: 8px;
+}
+
+.controles-superiores .selector-sede select {
+  border: none;
+  padding: 8px;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 25px;
+  outline: none;
+  height: auto;
+}
+
+.controles-superiores .buscador {
+  /* Mantiene tus estilos existentes para el buscador */
+  height: 40px; /* Asegura la misma altura que el botón para la alineación */
 }
 
 .btn-nuevo {
@@ -114,6 +113,8 @@ tbody tr:last-child td {
   gap: 8px;
   font-weight: bold;
   transition: background-color 0.3s;
+  height: 40px;
+  flex-shrink: 0;
 }
 
 .btn-nuevo:hover {
@@ -125,9 +126,18 @@ tbody tr:last-child td {
   align-items: center;
   background-color: #f5f5f5;
   border-radius: 5px;
-  padding: 8px 15px;
-  flex-grow: 1;
-  max-width: 400px;
+  width: 300px;
+  max-width: 300px;
+  height: 40px;
+  margin-left: auto; /* Empuja el buscador hacia la derecha */
+  padding-left: 10px; /* Añade un poco de espacio al inicio del buscador */
+}
+
+.buscador .material-icons {
+  color: rgba(0, 0, 0, 0.5); /* Intento de color grisáceo */
+  margin-right: 8px; /* Espacio entre el icono y el texto */
+  font-size: 20px;
+  margin-left: 10px; /* Mueve el icono un poco a la derecha */
 }
 
 .buscador input {
@@ -136,7 +146,65 @@ tbody tr:last-child td {
   padding: 8px;
   width: 100%;
   outline: none;
+  height: auto;
+  padding-left: 10px; /* Espacio para el texto, ajusta si es necesario */
 }
+
+/* ------------------------------- */
+
+.filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  /* Para respetar border-radius */
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: 2px solid #000;
+  /* Borde exterior */
+  table-layout: auto;
+  /* Asegúrate de que esté en auto */
+}
+
+th,
+td {
+  padding: 8px 10px;
+  /* Reduce el padding vertical y horizontal */
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+  /* Quita el borde de la última fila */
+}
+
+/* Título centrado */
+.titulo-centrado {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+}
+
+/* Logo centrado */
+.logo-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 
 /* Tabla */
 .tabla-container {
@@ -150,7 +218,8 @@ table {
   margin-top: 20px;
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -167,7 +236,8 @@ tr:hover {
 }
 
 /* Botones de acción */
-.btn-editar, .btn-eliminar {
+.btn-editar,
+.btn-eliminar {
   border: none;
   background: none;
   cursor: pointer;
@@ -176,10 +246,11 @@ tr:hover {
   padding: 5px;
 }
 
-.btn-editar, .btn-eliminar {
+.btn-editar,
+.btn-eliminar {
   color: #f39c12;
-  font-weight: Robotto; 
-  font-size: 1em;       
+  font-weight: Robotto;
+  font-size: 1em;
 }
 
 .btn-eliminar {
@@ -212,52 +283,59 @@ tr:hover {
 .opciones {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  row-gap: 20px; /* Controla la separación vertical entre las filas */
-  column-gap: 10px; /* Controla la separación horizontal entre las columnas (ajústalo si es necesario) */
+  row-gap: 20px;
+  /* Controla la separación vertical entre las filas */
+  column-gap: 10px;
+  /* Controla la separación horizontal entre las columnas (ajústalo si es necesario) */
   margin-bottom: 30px;
-  justify-items: center; /* Asegura que los elementos dentro de cada celda del grid estén centrados horizontalmente */
+  justify-items: center;
+  /* Asegura que los elementos dentro de cada celda del grid estén centrados horizontalmente */
   margin-top: 40px;
-  max-width: 600px; /* Mantén el ancho máximo para la compactación horizontal */
-  margin-left: auto; /* Mantiene el centrado horizontal del contenedor */
-  margin-right: auto; /* Mantiene el centrado horizontal del contenedor */
+  max-width: 600px;
+  /* Mantén el ancho máximo para la compactación horizontal */
+  margin-left: auto;
+  /* Mantiene el centrado horizontal del contenedor */
+  margin-right: auto;
+  /* Mantiene el centrado horizontal del contenedor */
 }
 
 .opciones button.opcion {
   background-color: #3498db;
-  /* Fondo oscuro para los módulos */
   color: #fff;
   border: none;
-  /* Eliminar el borde predeterminado del botón */
   border-radius: 5px;
-  padding: 30px;
-  /* Aumentar el padding para más espacio interno */
+  padding: 40px; /* Aumenta el padding para hacer el bloque más grande por dentro */
   text-align: center;
   cursor: pointer;
   transition: background 0.3s ease;
   display: flex;
-  /* Para alinear icono y texto */
   flex-direction: column;
-  /* Icono arriba, texto abajo */
   align-items: center;
-  /* Centrar horizontalmente */
   justify-content: center;
-  /* Centrar verticalmente */
-  gap: 10px;
-  /* Espacio entre icono y texto */
-  width: 250px;
-  /* Ancho estándar para los módulos */
-  height: 150px;
-  /* Alto estándar para los módulos */
+  gap: 15px; /* Aumenta el espacio entre el icono y el texto si lo deseas */
+  width: 280px; /* Aumenta el ancho del bloque */
+  height: 180px; /* Aumenta la altura del bloque */
   font-family: 'Roboto', sans-serif;
-  /* Asegurar la fuente */
   outline: none;
-  /* Eliminar el outline al enfocar */
-  padding-top: 50px;
-  /* Aumenta el padding superior */
-  padding-bottom: 40px;
-  /* Reduce el padding inferior si es necesario */
-  padding-left: 30px;
-  padding-right: 30px
+  padding-top: 60px; /* Ajusta el padding superior si es necesario */
+  padding-bottom: 50px; /* Ajusta el padding inferior si es necesario */
+  padding-left: 40px; /* Ajusta el padding izquierdo si es necesario */
+  padding-right: 40px; /* Ajusta el padding derecho si es necesario */
+}
+
+.opciones button.opcion .material-icons {
+  font-size: 70px; /* Aumenta el tamaño del icono si lo deseas */
+}
+
+.opciones button.opcion h3 {
+  margin-top: 15px; /* Ajusta el margen superior del título si es necesario */
+  margin-bottom: 8px; /* Ajusta el margen inferior del título si es necesario */
+  font-size: 1.4em; /* Aumenta el tamaño de la fuente del título si lo deseas */
+}
+
+.opciones button.opcion p {
+  font-size: 1em; /* Ajusta el tamaño de la fuente de la descripción si lo deseas */
+  color: #ddd;
 }
 
 .opciones button.opcion:hover {
@@ -282,7 +360,7 @@ tr:hover {
 }
 
 .salir {
-  background-color: #000     ;
+  background-color: #000;
   /* Un tono diferente para el botón de salir */
   color: #fff;
   padding: 10px 20px;
@@ -326,6 +404,59 @@ form {
   padding: 5px 10px;
 }
 
+
+
+.form-group-sede {
+  display: flex;
+  align-items: center; /*Centrar verticalmente el icono y el select */
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 400px; /* Establecer el ancho */
+  height: 48px; /* Establecer la altura */
+  .form-group-sede select {
+  /* ... otros estilos ... */
+  padding-top: 10px; /* Ajusta este valor */
+  padding-bottom: 10px; /* Ajusta este valor */
+  padding-left: 8px;
+  padding-right: 30px; /* Espacio para la flecha */
+  height: auto; /* Dejamos que la altura se ajuste al contenido y padding */
+}
+  
+}
+
+.form-group-sede select {
+  border: none;
+  padding: 8px; /* Ajustar el padding del select si es necesario */
+  margin-left: 10px; /* Espacio entre el icono y el select */
+  flex-grow: 1; /* Permite que el select ocupe el espacio restante */
+  font-family: 'Roboto', sans-serif; /* Asegurar la fuente en el select también */
+  font-size: 16px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position-x: 95%;
+  background-position-y: center;
+  padding-right: 24px; /* Espacio para la flecha */
+  
+}
+
+/* Estilos para el contenedor que alinea a la derecha */
+.align-right {
+  display: flex;
+  justify-content: flex-end; /* Alinea los elementos hijos a la derecha */
+  margin-bottom: 10px; /* Espacio entre el selector y los botones */
+}
+
+.material-icons {
+  color: #fff; /* Un color grisáceo para el icono */
+  margin-right: 10px; /* Espacio entre el icono y el select */
+}
+
+
+
 .form-group .material-icons {
   margin-right: 10px;
   color: #555;
@@ -361,15 +492,20 @@ button:hover {
 }
 
 .btn-primary {
-  background-color: #007bff; /* Azul */
+  background-color: #007bff;
+  /* Azul */
   color: white;
 }
 
 .btn-volver {
-  background-color: #6c757d; /* Gris */
+  background-color: #6c757d;
+  /* Gris */
   color: white;
 }
 
-.btn-primary:hover, .btn-editar:hover, .btn-eliminar:hover, .btn-volver:hover {
+.btn-primary:hover,
+.btn-editar:hover,
+.btn-eliminar:hover,
+.btn-volver:hover {
   opacity: 0.8;
 }
