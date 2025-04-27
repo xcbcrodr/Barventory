@@ -121,6 +121,77 @@ h1{
   background-color: #2980b9;
 }
 
+.btn-crear-sede, .btn-crear-producto, .btn-crear-usuario {
+  background-color: #000000;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Alinea verticalmente al centro */
+  justify-content: center; /* Alinea horizontalmente el contenido */
+  gap: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.btn-crear-sede:hover {
+  background-color: #222222;
+}
+
+.salir {
+  background-color: #000000;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Alinea verticalmente al centro */
+  justify-content: center; /* Alinea horizontalmente el contenido */
+  gap: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  height: 40px;
+  flex-shrink: 0;
+  /* Estilos para centrar el botón *en su contenedor padre* */
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content; /* El botón ocupa el ancho de su contenido */
+}
+
+.salir:hover {
+  background-color: #333;
+}
+
+.creacion {
+  background-color: #000000;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Alinea verticalmente al centro */
+  justify-content: center; /* Alinea horizontalmente el contenido */
+  gap: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  height: 40px;
+  flex-shrink: 0;
+  /* Estilos para centrar el botón *en su contenedor padre* */
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content; /* El botón ocupa el ancho de su contenido */
+}
+
+.creacion:hover {
+  background-color: #333;
+}
+
 .buscador {
   display: flex;
   align-items: center;
@@ -359,7 +430,7 @@ tr:hover {
   color: #ddd;
 }
 
-.salir {
+.crearUsuario {
   background-color: #000;
   /* Un tono diferente para el botón de salir */
   color: #fff;
@@ -375,11 +446,7 @@ tr:hover {
   /* Ancho del botón de salir */
 }
 
-.salir:hover {
-  background-color: #333;
-}
-
-.login-container {
+.login-container, .create-user-container {
   max-width: 400px;
   margin: 40px auto;
   padding: 20px;
@@ -388,6 +455,7 @@ tr:hover {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
+
 
 form {
   display: flex;

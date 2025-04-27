@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return `
             <tr id="sede-${sede.id}">
                 <td>${sede.nombre}</td>
-                <td>${sede.direccion || "Avenida falsa 6 g este 30 89, Chia"}</td>
+                <td>${sede.direccion || "No especificada"}</td>
                 <td>
                     <button class="btn-editar" data-id="${sede.id}">✏️ Editar</button>
                     <button class="btn-eliminar" data-id="${sede.id}">🗑️ Eliminar</button>

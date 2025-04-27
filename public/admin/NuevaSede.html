@@ -4,31 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Crear Nueva Sede</title>
-    <link rel="stylesheet" href="../css/NuevaSede.css">
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
 </head>
 <body>
-    <div class="form-container">
+    <div class="create-user-container">
 
       <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
         <h1>Crear Nueva Sede</h1>
 
-        <form id="sedeForm">
-            <div>
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre"/>
-                <div class="error-message" id="error-nombre"></div>
+        <form id="userForm" autocomplete="off">
+            <div class="form-group">
+                <span class="material-icons">person</span>
+                <input type="text" id="name" name="name" placeholder="Nombre" />
             </div>
 
-            <div>
-                <label for="direccion">Dirección</label>
-                <input type="text" id="direccion" name="direccion" />
-                <div class="error-message" id="error-direccion"></div>
+            <div class="form-group">
+                <span class="material-icons">
+                    add_home
+                    </span>
+                <input type="text" id="address" name="address" placeholder="Dirección" />
             </div>
+
+        </form>
 
             <div class="buttons">
-                <button type="submit">Crear Sede</button>
-                <button type="button" onclick="window.location.href='../admin/SedesActuales.html'">Volver</button>
+                <button class="creacion" id="btnSalir">
+                    <span class="material-icons">add</span>   Crear
+                  </button>
+            </div>
+
+            <div class="boton-volver">
+                <button class="btn-nuevo" onclick="window.location.href='../admin/SedesActuales.html'">
+                    <span class="material-icons">arrow_back</span> Volver
+                </button>
             </div>
         </form>
     </div>

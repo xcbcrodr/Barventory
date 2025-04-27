@@ -15,7 +15,7 @@ exports.obtenerTodasSedes = async (req, res) => {
   try {
     const query = `  
         SELECT id_sede AS id, nombre_sede AS nombre, 
-        direction AS direccion 
+        direccion AS direccion 
         FROM sede;
       `;
 
