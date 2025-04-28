@@ -22,6 +22,7 @@
     }
   }
 
+  /* MEDIA QUERY SUGERIDA */
   @media (max-width: 600px) {
     .contenedor-botones-sede {
       flex-direction: column;
