@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const formularioCrearSede = document.getElementById("sedeForm");
+    const formularioCrearUsuario = document.getElementById("usuarioForm");
     const nombreInput = document.getElementById("nombre");
-    const direccionInput = document.getElementById("direccion");
-    const errorNombre = document.getElementById("error-nombre");
-    const errorDireccion = document.getElementById("error-direccion");
+    const identificacionInput = document.getElementById("identificacion");
+    const contrasenaInput = document.getElementById("contrasenia");
+    /*const errorNombre = document.getElementById("error-nombre");
+    const errorDireccion = document.getElementById("error-direccion");*/
 
-    formularioCrearSede.addEventListener("submit", async (e) => {
+    formularioCrearUsuario.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         let isValid = true;
@@ -39,10 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             try {
-                const response = await fetch("http://localhost:3000/auth/sedes", {
+                const response = await fetch("http://localhost:3000/auth/usuarios", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(nuevaSede)
+                    body: JSON.stringify(nuevoUsuario)
                 });
 
                 if (!response.ok) {
@@ -50,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     throw new Error(`Error al crear la sede: ${response.status} - ${errorDetails.error || 'Detalles no disponibles'}`);
                 }
 
-                alert("Sede creada con éxito.");
-                window.location.href = "SedesActuales.html"; // Redireccionar al listado
+                alert("Usuario creada con éxito.");
+                window.location.href = "ModificacionUsuario.html"; // Redireccionar al listado
             } catch (error) {
                 console.error("Error al crear la sede:", error);
                 alert(error.message);
@@ -69,6 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Función para el botón "Volver" pendiente comprobar funcionalidad
     window.volver = function() {
-        window.location.href = "sedes.html"; // O puedes usar window.history.back();
+        window.location.href = "usuarios.html"; // O puedes usar window.history.back();
     };
 });

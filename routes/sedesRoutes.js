@@ -1,19 +1,38 @@
 const express = require("express");
 const router = express.Router();
+/*const { client } = require("../utils/db"); // Importación necesaria para las pruebas*/
 const sedesController = require("../controllers/sedesController");
-const { authenticateToken, checkRole } = require("../middlewares/authMiddleware"); // Importación corregida
+const { authenticateToken, checkRole } = require("../middlewares/authMiddleware");
 
-// ===== MIDDLEWARE GLOBAL =====
-// Aplica autenticación a TODAS las rutas de sedes
+// =============================================
+// MIDDLEWARE GLOBAL (protege las rutas siguientes)
+// =============================================
 router.use(authenticateToken);
 
-// ===== RUTAS =====
+// =============================================
+// RUTAS PROTEGIDAS (requieren autenticación y rol)
+// =============================================
+
 // 1. Obtener todas las sedes (solo Administrador)
-router.get(
-  "/",
-  checkRole(["Administrador"]), // Solo para rol "Administrador"
-  sedesController.obtenerTodasSedes
-);
+/*router.get("/", checkRole(["Administrador"]), (req, res, next) => {
+  // Saltar temporalmente el middleware de autenticación
+  sedesController.obtenerTodasSedes(req, res);
+});*/
+
+router.get("/", checkRole(["Administrador"]), (req, res, next) => {
+  console.log("Debug Sedes - Inicio de petición");
+  // Mantenemos el middleware original pero añadimos debug
+  const originalJson = res.json;
+  res.json = function(data) {
+    console.log("Debug Sedes - Datos a enviar:", {
+      tipo: typeof data,
+      cantidad: Array.isArray(data) ? data.length : '-',
+      muestra: Array.isArray(data) ? data[0] : data
+    });
+    originalJson.call(res, data);
+  };
+  next();
+}, sedesController.obtenerTodasSedes);
 
 // 2. Obtener una sede por ID (Solo Administrador)
 router.get(
