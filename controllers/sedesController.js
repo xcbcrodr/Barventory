@@ -1,4 +1,4 @@
-const { client } = require("../utils/db"); // Importa cliente de base de datos
+const client = require("../utils/db"); // Sin llaves {}
 
 // Helper para manejo de errores
 const handleDbError = (error, res, action = "procesar la solicitud") => {
@@ -10,49 +10,51 @@ const handleDbError = (error, res, action = "procesar la solicitud") => {
   });
 };
 
+// Helper para validar IDs numéricos
+const validateNumericId = (id, res) => {
+  if (!/^\d+$/.test(id)) {
+    res.status(400).json({
+      success: false,
+      error: "ID no válido",
+    });
+    return false;
+  }
+  return true;
+};
+
 // ===== OBTENER TODAS LAS SEDES =====
 exports.obtenerTodasSedes = async (req, res) => {
   try {
-    const query = `  
-        SELECT id_sede AS id, nombre_sede AS nombre, 
-        direccion AS direccion 
-        FROM sede;
-      `;
+    const result = await client.query(
+      "SELECT id_sede AS id, nombre_sede AS nombre, direccion AS direccion FROM sede"
+    );
 
-    const result = await client.query(query);
+    const responseData = result.rows.map(row => ({
+      id: row.id,
+      nombre: row.nombre,
+      direccion: row.direccion
+    }));
 
-    console.log("Filas obtenidas de la base de datos:", result.rows);
+    console.log("Datos enviados al frontend:", JSON.stringify(responseData, null, 2));
 
-    res.json(result.rows);
-
-    /*const sedesConDireccion = result.rows.map((row) => ({
-      id: row.id_sede,
-      nombre: row.nombre_sede,
-      direccion: row.direccion,
-    }));*/
+    res.json({ success: true, data: responseData });
   } catch (error) {
-    handleDbError(error, res, "obtener las sedes");
+    handleDbError(error, res, "obtener todas las sedes");
   }
 };
 
 // ===== OBTENER UNA SEDE POR ID =====
 exports.obtenerSedePorId = async (req, res) => {
   const sedeId = req.params.id;
-
-  if (!/^\d+$/.test(sedeId)) {
-    return res.status(400).json({
-      success: false,
-      error: "ID de sede no válido",
-    });
-  }
+  if (!validateNumericId(sedeId, res)) return;
 
   try {
     const result = await client.query(
       `
-            SELECT id_sede, nombre_sede, direccion
-            FROM Sede
-            WHERE id_sede = $1
-        `,
+        SELECT id_sede, nombre_sede, direccion
+        FROM Sede
+        WHERE id_sede = $1
+      `,
       [sedeId]
     );
 
@@ -63,7 +65,7 @@ exports.obtenerSedePorId = async (req, res) => {
       });
     }
 
-    res.json(result.rows[0]); // Envía directamente el objeto de la sede
+    res.json({ success: true, data: result.rows[0] });
   } catch (error) {
     handleDbError(error, res, `obtener la sede con ID ${sedeId}`);
   }
@@ -83,17 +85,16 @@ exports.crearSede = async (req, res) => {
   try {
     const result = await client.query(
       `
-            INSERT INTO Sede (nombre_sede, direccion)
-            VALUES ($1, $2)
-            RETURNING id_sede, nombre_sede, direccion
-        `,
+        INSERT INTO Sede (nombre_sede, direccion)
+        VALUES ($1, $2)
+        RETURNING id_sede, nombre_sede, direccion
+      `,
       [nombre_sede, direccion]
     );
 
-    res.status(201).json(result.rows[0]); // Envía directamente el objeto de la sede creada
+    res.status(201).json({ success: true, data: result.rows[0] });
   } catch (error) {
     if (error.code === "23505") {
-      // Violación de unique constraint
       return res.status(409).json({
         success: false,
         error: "Ya existe una sede con ese nombre",
@@ -108,12 +109,7 @@ exports.actualizarSede = async (req, res) => {
   const sedeId = req.params.id;
   const { nombre_sede, direccion } = req.body;
 
-  if (!/^\d+$/.test(sedeId)) {
-    return res.status(400).json({
-      success: false,
-      error: "ID de sede no válido",
-    });
-  }
+  if (!validateNumericId(sedeId, res)) return;
 
   if (!nombre_sede || !direccion) {
     return res.status(400).json({
@@ -125,12 +121,12 @@ exports.actualizarSede = async (req, res) => {
   try {
     const result = await client.query(
       `
-            UPDATE Sede
-            SET nombre_sede = $1,
-                direccion = $2
-            WHERE id_sede = $3
-            RETURNING id_sede, nombre_sede, direccion
-        `,
+        UPDATE Sede
+        SET nombre_sede = $1,
+            direccion = $2
+        WHERE id_sede = $3
+        RETURNING id_sede, nombre_sede, direccion
+      `,
       [nombre_sede, direccion, sedeId]
     );
 
@@ -141,7 +137,7 @@ exports.actualizarSede = async (req, res) => {
       });
     }
 
-    res.json(result.rows[0]); // Envía directamente el objeto de la sede actualizada
+    res.json({ success: true, data: result.rows[0] });
   } catch (error) {
     if (error.code === "23505") {
       return res.status(409).json({
@@ -156,20 +152,14 @@ exports.actualizarSede = async (req, res) => {
 // ===== ELIMINAR UNA SEDE =====
 exports.eliminarSede = async (req, res) => {
   const sedeId = req.params.id;
-
-  if (!/^\d+$/.test(sedeId)) {
-    return res.status(400).json({
-      success: false,
-      error: "ID de sede no válido",
-    });
-  }
+  if (!validateNumericId(sedeId, res)) return;
 
   try {
     const result = await client.query(
       `
-            DELETE FROM Sede
-            WHERE id_sede = $1
-        `,
+        DELETE FROM Sede
+        WHERE id_sede = $1
+      `,
       [sedeId]
     );
 
@@ -186,7 +176,6 @@ exports.eliminarSede = async (req, res) => {
     });
   } catch (error) {
     if (error.code === "23503") {
-      // Violación de foreign key
       return res.status(409).json({
         success: false,
         error: "No se puede eliminar la sede porque tiene registros asociados",

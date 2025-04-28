@@ -21,31 +21,16 @@
             </div>
 
             <div class="controles-superiores">
-                <button class="btn-crear-usuario">
+                <button class="btn-crear-usuario" onclick="window.location.href='../admin/NuevoUsuario.html'">
                     <span class="material-icons">add</span> Agregar Usuario
                 </button>
-                <!--div class="selector-sede">
-                  <span class="material-icons">location_on</span>
-                  <select id="sede" name="sede">
-                    <option value="" disabled selected>Selecciona sede</option>
-                    <option value="chia">Chía</option>
-                    <option value="cota">Cota</option>
-                    <option value="zonat">Zona T</option>
-                  </select>
-                </div-->
+                
                 <div class="buscador">
                     <span class="material-icons">search</span>
                     <input type="text" placeholder="Buscar usuario..." />
                 </div>
             </div>
-            <!--button class="btn-add" id="addUserBtn" aria-label="Añadir nuevo usuario">
-                <i class="fas fa-user-plus"></i>
-                Nuevo Usuario
-            </button>
-            <button class="btn-back" id="backUserBtn" aria-label="Volver" onclick="window.history.back()">
-                <i class="fas fa-arrow-left"></i>
-                Volver
-            </button-->
+            
         </header>
 
         <div class="search-bar"></div>
@@ -61,24 +46,7 @@
                     </tr>
                 </thead>
                 <tbody id="tablaUsuario">
-                    <tr>
-                        <td>Camila Pesellin</td>
-                        <td>Cajero</td>
-                        <td>La seleccionada</td>
-                        <td>Editar | Eliminar</td>
-                    </tr>
-                    <tr>
-                        <td>Cristian Rodriguez</td>
-                        <td>Mesero</td>
-                        <td>La seleccionada</td>
-                        <td>Editar | Eliminar</td>
-                    </tr>
-                    <tr>
-                        <td>Nombre del admin</td>
-                        <td>Administrador</td>
-                        <td>La seleccionada</td>
-                        <td>Editar | Eliminar</td>
-                    </tr>
+                    
                 </tbody>
             </table>
         </div>

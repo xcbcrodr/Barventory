@@ -5,9 +5,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors'); // Importa el middleware CORS
 const authRoutes = require('./routes/authRoutes'); // Ajusta la ruta si es necesario
 const sedesRoutes = require('./routes/sedesRoutes'); // Importa las rutas de sedes
+const sedesDebugRoutes = require('./routes/sedesDebugRoutes'); // Añade al inicio con los demás requires
 
 //app.use("/auth", sedesRoutes); // Todas las rutas de sedes tendrán /auth
 const app = express();
+
+// Antes de los middlewares de autenticación ↓
+app.use('/debug', sedesDebugRoutes); 
+
 
 // ===== 1. MIDDLEWARES BÁSICOS (SIEMPRE AL INICIO) =====
 app.use(bodyParser.json());
@@ -43,6 +48,6 @@ app.use((err, req, res, next) => {
 // ===== 5. INICIO DEL SERVIDOR =====
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT} - Modo: ${process.env.NODE_ENV || 'development'}`);
+  });
 
