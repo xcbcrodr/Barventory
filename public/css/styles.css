@@ -459,11 +459,11 @@ tr:hover {
 
 .opciones button.opcion p {
   font-size: 1em;
-  color: #2980b9;
+  color: #ddd;
 }
 
 .opciones button.opcion:hover {
-  background-color: #2980b9;
+  background-color: #000;
 }
 
 .opciones button.opcion .material-icons {

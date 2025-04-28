@@ -1,13 +1,14 @@
 const jwt = require("jsonwebtoken");
-const client = require("../utils/db"); // Importación directa (sin llaves)
+const client = require("../utils/db");
 
 const authenticateToken = async (req, res, next) => {
-  // Elimina completamente la sobreescritura de res.json
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
-    if (!token) return res.status(401).json({ error: "Token no proporcionado" });
+    if (!token) {
+      return res.status(401).json({ error: "Token no proporcionado" });
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "tu_secreto_seguro");
 
@@ -19,9 +20,19 @@ const authenticateToken = async (req, res, next) => {
       [decoded.id]
     );
 
-    if (userResult.rows.length === 0) return res.sendStatus(403);
+    if (userResult.rows.length === 0) {
+      return res.sendStatus(403);
+    }
 
-    req.user = userResult.rows[0]; // Mantenemos la estructura directa de la DB
+    const user = userResult.rows[0];
+    req.user = {
+      id: user.id_usuario,
+      identificacion: user.identificacion,
+      nombre: user.nombre,
+      email: user.email,
+      rol: user.nombre_rol
+    };
+
     next();
   } catch (err) {
     console.error("Error en autenticación:", err);
@@ -40,5 +51,5 @@ const checkRole = (roles) => {
 
 module.exports = {
   authenticateToken,
-  checkRole,
+  checkRole
 };
