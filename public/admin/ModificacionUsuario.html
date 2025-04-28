@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bar-ventory - Gestión de Usuarios</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="../js/ModificacionUsuario.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Gestión de Usuarios</h1>
+            <div class="logo-container">
+                <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
+            </div>
+
+            <div class="controles-superiores">
+                <button class="btn-crear-usuario" onclick="window.location.href='../admin/NuevoUsuario.html'">
+                    <span class="material-icons">add</span> Agregar Usuario
+                </button>
+                
+                <div class="buscador">
+                    <span class="material-icons">search</span>
+                    <input type="text" placeholder="Buscar usuario..." />
+                </div>
+            </div>
+            
+        </header>
+
+        <div class="search-bar"></div>
+
+        <div class="tabla-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Rol</th>
+                        <th>Sede</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaUsuario">
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div class="boton-volver">
+            <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
+                <span class="material-icons">arrow_back</span> Volver
+            </button>
+        </div>
+
+        
+
+        <!--div class="modal" id="userModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    
+                    <h2 id="modalTitle">Nuevo Usuario</h2>
+                    <button class="close-modal"><i class="fas fa-times"></i></button>
+                </div>
+                <form id="userForm">
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="identityCheck" checked>
+                        <label for="userId">Ingrese el número de identidad</label>
+                        <input type="text" id="userId" placeholder="Número de identidad">
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="nameCheck" checked>
+                        <label for="userName">Ingrese el nombre completo</label>
+                        <input type="text" id="userName" placeholder="Nombre completo" required>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="emailCheck" checked>
+                        <label for="userEmail">Correo Electrónico</label>
+                        <input type="email" id="userEmail" placeholder="Correo electrónico" required>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="passwordCheck" checked>
+                        <label for="userPassword">Contraseña</label>
+                        <div class="password-input-container">
+                            <input type="password" id="userPassword" placeholder="Contraseña">
+                            <button type="button" id="togglePassword" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="roleCheck" checked>
+                        <label for="userRole">Rol</label>
+                        <select id="userRole" required>
+                            <option value="">Selecciona tu rol</option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Cajero</option>
+                            <option value="3">Mesero</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="sedeCheck" checked>
+                        <label for="userSede">Sede</label>
+                        <select id="userSede" required>
+                            <option value="">Selecciona tu sede</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div-->
+    </div>
+</body>
+
+</html>

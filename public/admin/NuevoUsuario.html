@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear Nuevo Usuario</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+</head>
+
+<body>
+    <div class="create-user-container">
+
+        <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+
+        <h1>Creación Nuevo Usuario</h1>
+
+        <form id="userForm" autocomplete="off">
+            <div class="form-group">
+                <span class="material-icons">person</span>
+                <input type="text" id="name-user" name="name-user" placeholder="Nombre" />
+            </div>
+
+            <div class="form-group">
+                <span class="material-icons">badge</span>
+                <input type="text" id="identification" name="identification" placeholder="Identificación" />
+            </div>
+
+            <div class="form-group">
+                <span class="material-icons">email</span>
+                <input type="email" id="email" name="email" placeholder="Correo electrónico" />
+            </div>
+            
+            <div class="form-group">
+                <span class="material-icons">lock</span>
+                <input type="password" id="password" name="password" placeholder="Contraseña" />
+            </div>
+
+            <div class="form-group">
+                <span class="material-icons">person_outline</span>
+                <select id="rol" name="rol">
+                    <option value="" disabled selected>Seleccionar rol</option>
+                    <!--option value="administrador">Administrador</option>
+                    <option value="cajero">Cajero</option>
+                    <option value="mesero">Mesero</option-->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <span class="material-icons">location_on</span>
+                <select id="sede" name="sede">
+                    <option value="" disabled selected>Seleccionar sede</option>
+                    <!--option value="chia">Chía</option>
+                    <option value="usaquen">Usaquén</option-->
+                </select>
+            </div>
+            <p id="errorMessage" style="color: #e74c3c; display: none; margin-bottom: 10px"></p>
+
+        </form>
+
+        <div class="contenedor-botones-sede">
+            <button class="btn-volver-sede" id="btnVolverSede"
+                onclick="window.location.href='../admin/ModificacionUsuario.html'">
+                <span class="material-icons">arrow_back</span> Volver
+            </button>
+            <button class="boton-crear-sede" id="btnCrearSede">
+                <span class="material-icons">library_add</span> Crear
+            </button>
+        </div>
+
+        <script src="../js/NuevoUsuario.js"></script>
+</body>
+
+</html>

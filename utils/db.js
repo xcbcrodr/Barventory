@@ -1,6 +1,7 @@
-require('dotenv').config(); 
+// db.js
+require('dotenv').config();
+const { Client } = require('pg'); 
 
-const { Client } = require('pg');
 const client = new Client({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -9,6 +10,8 @@ const client = new Client({
   port: process.env.DB_PORT,
 });
 
-client.connect();
+client.connect()
+  .then(() => console.log("✅ PostgreSQL conectado"))
+  .catch(err => console.error("❌ Error de conexión a PostgreSQL:", err));
 
-module.exports = client;
+module.exports = client; // Exportación directa

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Módulo de Sedes</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script defer src="../js/SedesActuales.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sedes-container">
+            <h1 class="titulo-centrado">Gestión de Sedes</h1>
+
+            <div class="logo-container">
+                <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
+            </div>
+
+            <div class="controles-superiores">
+                <button class="btn-crear-sede" id="btnAgregarSede" onclick="window.location.href='../admin/NuevaSede.html'">
+                    <span class="material-icons">add</span> Agregar Sede
+                </button>
+
+                <div class="buscador">
+                    <span class="material-icons">search</span>
+                    <input type="text" id="buscarSede" placeholder="Buscar sede..." />
+                </div>
+            </div>
+
+            <div class="tabla-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaSedes">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="boton-volver">
+                <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
+                    <span class="material-icons">arrow_back</span> Volver
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
