@@ -36,8 +36,7 @@ router.get('/sedes', authController.getSedes);
 router.use(authenticateToken);
 
 router.get('/profile', authController.getProfile);
-//router.get('/admin/dashboard', checkRole(['admin']), authController.adminDashboard);
-router.get('/admin/dashboardAdmin.html', checkRole(['Administrador']), authController.adminDashboard);
+//router.get('/admin/dashboardAdmin.html', checkRole(['Administrador']), authController.adminDashboard);
 router.get('/cajero/dashboard', checkRole(['cajero']), authController.cashierDashboard);
 // router.get('/mesero/dashboard', checkRole(['mesero']), authController.waitressDashboard); se implementara para cuando se confirme que este bien el desarrollo de los middlewares
 

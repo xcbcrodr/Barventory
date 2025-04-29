@@ -19,20 +19,22 @@
 
     <h1>Creación Nueva Sede</h1>
 
-    <form id="userForm" autocomplete="off">
+    
+    <form id="sedeForm" autocomplete="off">
       <div class="form-group">
-        <span class="material-icons">person</span>
-        <input type="text" id="name" name="name" placeholder="Nombre" />
+          <span class="material-icons">location_city</span>
+          <input type="text" id="nombre" name="nombre" placeholder="Nombre" />
       </div>
-
+  
       <div class="form-group">
-        <span class="material-icons">
-          add_home
-        </span>
-        <input type="text" id="address" name="address" placeholder="Dirección" />
+          <span class="material-icons">add_home</span>
+          <input type="text" id="direccion" name="direccion" placeholder="Dirección" />
       </div>
+  </form>
 
-    </form>
+
+<div id="error-nombre" class="error-message"></div>
+<div id="error-direccion" class="error-message"></div>
 
     <div class="contenedor-botones-sede">
         <button class="btn-volver-sede" id="btnVolverSede" onclick="window.location.href='../admin/SedesActuales.html'">

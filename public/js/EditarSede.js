@@ -2,40 +2,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
     const formularioEditar = document.getElementById("formularioEditar");
-    const nombreSedeInput = document.getElementById("nombre_sede");
+    const nombreSedeInput = document.getElementById("nombre"); // Cambiado a "nombre"
     const direccionInput = document.getElementById("direccion");
-    const errorNombre = document.getElementById("error-nombre_sede");
+    const btnActualizarSede = document.getElementById("btnActualizarSede");
+    const errorNombre = document.getElementById("error-nombre"); // Cambiado a "error-nombre"
     const errorDireccion = document.getElementById("error-direccion");
 
     if (!id) {
-        console.warn("ID de sede no proporcionado en la URL.");
         alert("ID de sede no proporcionado.");
+        window.location.href = "../admin/SedesActuales.html";
         return;
     }
 
-    try {
-        const response = await fetch(`http://localhost:3000/auth/sedes/${id}`);
-        if (!response.ok) {
-            const errorDetails = await response.json();
-            throw new Error(`Error al obtener datos de la sede: ${response.status} - ${errorDetails.error || 'Detalles no disponibles'}`);
+    // Cargar datos de la sede
+    const cargarSede = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                throw new Error("No se encontró token de autenticación");
+            }
+
+            const response = await fetch(`http://localhost:3000/auth/sedes/${id}`, { 
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error al obtener sede");
+            }
+
+            const { data: sede } = await response.json();
+
+            nombreSedeInput.value = sede.nombre_sede || sede.nombre;
+            direccionInput.value = sede.direccion;
+
+        } catch (error) {
+            console.error("Error al cargar sede:", error);
+            alert(`Error: ${error.message}`);
+            window.location.href = "../admin/SedesActuales.html";
         }
-        const sede = await response.json();
+    };
 
-        nombreSedeInput.value = sede.nombre_sede;
-        direccionInput.value = sede.direccion;
-
-    } catch (error) {
-        console.error("Error al cargar la sede:", error);
-        alert(error.message || "No se pudo cargar la sede. Por favor, inténtalo de nuevo.");
-    }
-
-    // Evento para guardar cambios
-    formularioEditar.addEventListener("submit", async (e) => {
+    // Manejador para actualizar
+    btnActualizarSede.addEventListener("click", async (e) => {
         e.preventDefault();
 
         let isValid = true;
 
-        // Validar el nombre
+        // Validaciones
         if (nombreSedeInput.value.trim() === "") {
             mostrarError(errorNombre, "El nombre es obligatorio.");
             isValid = false;
@@ -46,7 +62,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             limpiarError(errorNombre);
         }
 
-        // Validar la dirección
         if (direccionInput.value.trim() === "") {
             mostrarError(errorDireccion, "La dirección es obligatoria.");
             isValid = false;
@@ -58,43 +73,53 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (isValid) {
-            const nuevaSede = {
-                nombre: nombreSedeInput.value,
-                direccion: direccionInput.value
+            const sedeActualizada = {
+                nombre_sede: nombreSedeInput.value.trim(), // Asegúrate que coincida con el backend
+                direccion: direccionInput.value.trim()
             };
 
             try {
-                const response = await fetch(`http://localhost:3000/auth/sedes/${id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(nuevaSede)
-                });
-
-                if (!response.ok) {
-                    const errorDetails = await response.json();
-                    throw new Error(`Error al actualizar la sede: ${response.status} - ${errorDetails.error || 'Detalles no disponibles'}`);
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    throw new Error("No se encontró token de autenticación");
                 }
 
-                alert("Sede actualizada con éxito.");
-                window.location.href = "sedesActuales.html"; // Redireccionar al listado
+                const response = await fetch(`http://localhost:3000/auth/sedes/${id}`, { 
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(sedeActualizada)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Error al actualizar sede");
+                }
+
+                alert("Sede actualizada con éxito!");
+                window.location.href = "../admin/SedesActuales.html";
 
             } catch (error) {
-                console.error("Error al guardar los cambios:", error);
-                alert(error.message || "No se pudo actualizar la sede. Por favor, inténtalo de nuevo.");
+                console.error("Error al actualizar sede:", error);
+                alert(`Error: ${error.message}`);
             }
         }
     });
 
+    // Funciones auxiliares
     function mostrarError(element, message) {
         element.textContent = message;
+        element.style.display = "block";
     }
 
     function limpiarError(element) {
         element.textContent = "";
+        element.style.display = "none";
     }
 
-    // Botón volver
-    document.getElementById("volver").addEventListener("click", () => {
-        window.history.back(); // O usa: window.location.href = "sedes.html";
-    });
+    // Cargar datos al iniciar
+    cargarSede();
 });

@@ -1,16 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const formularioCrearSede = document.getElementById("sedeForm");
-    const nombreInput = document.getElementById("nombre");
+    const nuevaSedeForm = document.getElementById("sedeForm"); // ID del formulario
+    const nombreInput = document.getElementById("nombre"); // Cambiado a "nombre"
     const direccionInput = document.getElementById("direccion");
-    const errorNombre = document.getElementById("error-nombre");
+    const btnCrearSede = document.getElementById("btnCrearSede");
+    const errorNombre = document.getElementById("error-nombre"); // Cambiado a "error-nombre"
     const errorDireccion = document.getElementById("error-direccion");
+    const API_URL = "http://localhost:3000/auth/sedes";
 
-    formularioCrearSede.addEventListener("submit", async (e) => {
+    function mostrarError(element, message) {
+        element.textContent = message;
+        element.style.display = "block";
+    }
+
+    function limpiarError(element) {
+        element.textContent = "";
+        element.style.display = "none";
+    }
+
+    btnCrearSede.addEventListener("click", async (e) => {
         e.preventDefault();
 
         let isValid = true;
 
-        // Validar el nombre
         if (nombreInput.value.trim() === "") {
             mostrarError(errorNombre, "El nombre es obligatorio.");
             isValid = false;
@@ -21,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
             limpiarError(errorNombre);
         }
 
-        // Validar la dirección
         if (direccionInput.value.trim() === "") {
             mostrarError(errorDireccion, "La dirección es obligatoria.");
             isValid = false;
@@ -34,41 +44,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (isValid) {
             const nuevaSede = {
-                nombre: nombreInput.value,
-                direccion: direccionInput.value
+                nombre_sede: nombreInput.value.trim(),
+                direccion: direccionInput.value.trim(),
             };
 
             try {
-                const response = await fetch("http://localhost:3000/auth/sedes", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(nuevaSede)
-                });
-
-                if (!response.ok) {
-                    const errorDetails = await response.json();
-                    throw new Error(`Error al crear la sede: ${response.status} - ${errorDetails.error || 'Detalles no disponibles'}`);
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    throw new Error("No se encontró token de autenticación");
                 }
 
-                alert("Sede creada con éxito.");
-                window.location.href = "SedesActuales.html"; // Redireccionar al listado
+                console.log("Token enviado:", token);
+
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(nuevaSede),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Error al crear la sede");
+                }
+
+                alert("Sede creada con éxito!");
+                window.location.href = "SedesActuales.html";
+
             } catch (error) {
-                console.error("Error al crear la sede:", error);
-                alert(error.message);
+                console.error("Error al crear sede:", error);
+                alert(`Error: ${error.message}`);
             }
         }
     });
-
-    function mostrarError(element, message) {
-        element.textContent = message;
-    }
-
-    function limpiarError(element) {
-        element.textContent = "";
-    }
-
-    // Función para el botón "Volver" pendiente comprobar funcionalidad
-    window.volver = function() {
-        window.location.href = "sedes.html"; // O puedes usar window.history.back();
-    };
 });

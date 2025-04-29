@@ -2,48 +2,48 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Editar Sede</title>
-  <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="stylesheet" href="../css/responsive.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Sede</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 </head>
 
 <body>
-  <div class="create-user-container">
+    <div class="create-user-container">
 
-    <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+        <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
-    <h1>Editar Sede</h1>
+        <h1>Editar Sede</h1>
 
-    <form id="userForm" autocomplete="off">
-      <div class="form-group">
-        <span class="material-icons">person</span>
-        <input type="text" id="name" name="name" placeholder="Nombre" />
-      </div>
+        <form id="formularioEditar" autocomplete="off">
+            <div class="form-group">
+                <span class="material-icons">location_city</span>
+                <input type="text" id="nombre" name="nombre" placeholder="Nombre" />
+            </div>
 
-      <div class="form-group">
-        <span class="material-icons">
-          add_home
-        </span>
-        <input type="text" id="address" name="address" placeholder="Dirección" />
-      </div>
+            <div class="form-group">
+                <span class="material-icons">add_home</span>
+                <input type="text" id="direccion" name="direccion" placeholder="Dirección" />
+            </div>
+        </form>
 
-    </form>
+        <div id="error-nombre" class="error-message"></div>
+        <div id="error-direccion" class="error-message"></div>
 
-    <div class="contenedor-botones-sede">
-        <button class="btn-volver-sede" id="btnVolverSede" onclick="window.location.href='../admin/SedesActuales.html'">
-          <span class="material-icons">arrow_back</span> Volver
-        </button>
-        <button class="boton-crear-sede" id="btnCrearSede">
-          <span class="material-icons">edit</span> Actualizar
-        </button>
-      </div>
+        <div class="contenedor-botones-sede">
+            <button class="btn-volver-sede" id="btnVolverSede" onclick="window.location.href='../admin/SedesActuales.html'">
+                <span class="material-icons">arrow_back</span> Volver
+            </button>
+            <button class="boton-crear-sede" id="btnActualizarSede">
+                <span class="material-icons">edit</span> Actualizar
+            </button>
+        </div>
 
-  <script src="../js/NuevaSede.js"></script>
+        <script src="../js/EditarSede.js"></script>
 </body>
 
 </html>
