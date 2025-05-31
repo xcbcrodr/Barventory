@@ -5,39 +5,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Editar Usuario</title>
-    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/styles2.css" />
     <link rel="stylesheet" href="../css/responsive.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
-    <div class="create-user-container">
-        <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
-        <h1>Editar Usuario</h1>
+    
+    <div class="login-container">
+        <h1 class="titulo-centrado">Editar Usuario</h1> <!-- Mismo estilo de título -->
+
+        <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" /> <!-- Logo con mismas dimensiones -->
+
         <form id="formularioEditarUsuario" autocomplete="off">
+    
             <div class="form-group">
                 <span class="material-icons">person</span>
                 <input type="text" id="nombre" name="nombre" placeholder="Nombre" />
             </div>
+            
             <div class="form-group">
                 <span class="material-icons">badge</span>
                 <input type="text" id="identification" name="identification" placeholder="Identificación" />
             </div>
+            
             <div class="form-group">
                 <span class="material-icons">email</span>
                 <input type="email" id="email" name="email" placeholder="Correo electrónico" />
             </div>
+            
             <div class="form-group">
                 <span class="material-icons">lock</span>
                 <input type="password" id="password" name="password" placeholder="Contraseña" />
             </div>
+            
             <div class="form-group">
                 <span class="material-icons">person_outline</span>
                 <select id="rol" name="rol">
                     <option value="" disabled selected>Seleccionar rol</option>
                 </select>
             </div>
+            
             <div class="form-group">
                 <span class="material-icons">location_on</span>
                 <select id="sede" name="sede">
@@ -45,19 +54,22 @@
                 </select>
             </div>
         </form>
-        <div id="mensaje-edicion" style="display: none; margin-bottom: 10px;"></div>
-        <p id="error-message" style="color: #e74c3c; display: none; margin-bottom: 10px"></p>
 
-        <div class="contenedor-botones-usuario">
-            <button class="btn-volver-usuario" id="btnVolverUsuario"
+        <div id="mensaje-edicion" class="mensaje-flotante" style="display: none;"></div>
+        <p id="error-message" style="color: #e74c3c; display: none; margin-bottom: 10px"></p>
+
+        <div class="contenedor-botones-sede">
+            <button class="btn-volver-sede" id="btnVolverUsuario"
                 onclick="window.location.href='../admin/ModificacionUsuario.html'">
                 <span class="material-icons">arrow_back</span> Volver
             </button>
-            <button class="boton-crear-usuario" id="btnActualizarUsuario">
+            <button class="btn-actualizar-usuario" id="btnActualizarUsuario">
                 <span class="material-icons">edit</span> Actualizar
             </button>
         </div>
-        <script src="../js/EditarUsuario.js"></script>
+    </div>
+
+    <script src="../js/EditarUsuario.js"></script>
 </body>
 
 </html>

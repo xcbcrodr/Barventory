@@ -1,0 +1,60 @@
+    <!DOCTYPE html>
+    <html lang="es">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Módulo Administración de Mesas</title>
+        <!--link rel="stylesheet" href="../css/styles.css" /-->
+        <link rel="stylesheet" href="../css/styles2.css" />
+        <link rel="stylesheet" href="../css/responsive.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <script defer src="../js/MesasCreadas.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="sedes-container">
+                <h1 class="titulo-centrado">Gestión Disponibilidad de Mesas</h1>
+
+                <div class="logo-container">
+                    <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
+                </div>
+
+                <div class="gestion-mesas-controles">
+                    <div class="login-container" style="margin: 20px auto 10px auto; max-width: 300px; box-shadow: none; background-color: transparent; padding: 0; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <span class="material-icons">location_on</span>
+                            <select id="sede" name="sede">
+                                <option value="" disabled selected>Selecciona la sede</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mesas-container" id="mesas-container">
+                        
+                    </div>
+                
+                    <div class="controles-mesas" style="display: flex; gap: 15px; margin-top: 20px; justify-content: center;">
+                        <button class="btn-crear-mesa" id="btnAgregarMesa">
+                            <span class="material-icons">add</span> Añadir Mesa
+                        </button>
+                        <button class="btn-eliminar-mesa" id="btnEliminarMesas">
+                            <span class="material-icons">delete</span> Eliminar Mesa(s)
+                        </button>
+                    </div>
+                </div>
+
+                
+
+                <div class="boton-volver">
+                    <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
+                        <span class="material-icons">arrow_back</span> Volver
+                    </button>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    </html>

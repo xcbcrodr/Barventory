@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mesero Bar-ventory</title>
+    <link rel="stylesheet" href="../css/styles2.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+    <div class="productos-container">
+        <h1 class="titulo-centrado">Registro de Pedidos</h1>
+        <div class="logo-container">
+            <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
+        </div>
+        <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
+
+        <div class="gestion-mesas-controles">
+            <div class="login-container"
+                style="margin: 20px auto 10px auto; max-width: 300px; box-shadow: none; background-color: transparent; padding: 0; margin-bottom: 20px;">
+                <div class="form-group">
+                    <span class="material-icons">event_seat</span>
+                    <select id="mesa">
+                        <option value="" disabled selected>Selecciona la mesa</option>
+                        </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="seccionProductosPedidos" style="display: none;">
+            <div class="tabla-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Productos</th>
+                            <th>Cantidad (Stock)</th> <th>Precio x Unidad</th>
+                            <th>Añadir al Pedido</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaProducto">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="tabla-pedido">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad Solicitada</th>
+                            <th>Precio Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPedido"> </tbody>
+                </table>
+            </div>
+
+            <button class="registrar-pedido-btn" id="btnRegistrarPedido">
+                Registrar Pedido
+            </button>
+        </div> <button class="salir" id="btnSalir">
+            <span class="material-icons">logout</span> Salir
+        </button>
+    </div>
+
+    <script src="../js/dashboardMesero.js" defer></script>
+
+    <script>
+        document.getElementById("usuarioNombre").textContent =
+            localStorage.getItem("nombreUsuario") || "Usuario";
+    </script>
+
+    <script>
+        const token = localStorage.getItem("token");
+        const rol = localStorage.getItem("rol");
+    </script>
+
+</body>
+
+</html>

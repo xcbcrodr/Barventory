@@ -1,4 +1,4 @@
-const client = require("../utils/db"); // Sin llaves {}
+const client = require("../utils/db");
 
 // Helper para manejo de errores
 const handleDbError = (error, res, action = "procesar la solicitud") => {
@@ -35,7 +35,7 @@ exports.obtenerTodasSedes = async (req, res) => {
             direccion: row.direccion
         }));
 
-        console.log("Datos enviados al frontend:", JSON.stringify(responseData, null, 2));
+        console.log("--> obtenerTodasSedes: Datos enviados al frontend:", JSON.stringify(responseData, null, 2));
 
         res.json({ success: true, data: responseData });
     } catch (error) {
@@ -178,7 +178,8 @@ exports.eliminarSede = async (req, res) => {
         if (error.code === "23503") {
             return res.status(409).json({
                 success: false,
-                error: "No se puede eliminar la sede porque tiene registros asociados",
+                error:
+                    "No se puede eliminar la sede porque tiene registros asociados",
             });
         }
         handleDbError(error, res, `eliminar la sede con ID ${sedeId}`);

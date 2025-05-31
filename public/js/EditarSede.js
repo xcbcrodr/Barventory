@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
     const formularioEditar = document.getElementById("formularioEditar");
-    const nombreSedeInput = document.getElementById("nombre"); // Cambiado a "nombre"
+    const nombreSedeInput = document.getElementById("nombre"); 
     const direccionInput = document.getElementById("direccion");
     const btnActualizarSede = document.getElementById("btnActualizarSede");
-    const errorNombre = document.getElementById("error-nombre"); // Cambiado a "error-nombre"
+    const errorNombre = document.getElementById("error-nombre"); 
     const errorDireccion = document.getElementById("error-direccion");
 
     if (!id) {

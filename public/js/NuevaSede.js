@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const nuevaSedeForm = document.getElementById("sedeForm"); // ID del formulario
-    const nombreInput = document.getElementById("nombre"); // Cambiado a "nombre"
+    const nuevaSedeForm = document.getElementById("sedeForm"); 
+    const nombreInput = document.getElementById("nombre"); 
     const direccionInput = document.getElementById("direccion");
     const btnCrearSede = document.getElementById("btnCrearSede");
-    const errorNombre = document.getElementById("error-nombre"); // Cambiado a "error-nombre"
+    const errorNombre = document.getElementById("error-nombre"); 
     const errorDireccion = document.getElementById("error-direccion");
     const API_URL = "http://localhost:3000/auth/sedes";
 

@@ -8,6 +8,8 @@ body {
 
 h1 {
   padding: 40px;
+  color: var(--negro);
+  text-shadow: 1px 1px 2px rgba(230, 126, 34, 0.3); /* Sutil sombra cerveza */
 }
 
 .fade-out {
@@ -464,7 +466,7 @@ tr:hover {
 }
 
 .opciones button.opcion {
-  background-color: #3498db;
+  background-color: #153348;
   color: #fff;
   border: none;
   border-radius: 5px;

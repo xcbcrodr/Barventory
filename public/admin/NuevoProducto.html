@@ -16,41 +16,37 @@
 <body>
     <div class="login-container">
 
-        <h1 class="titulo-centrado">Creación Nuevo Usuario</h1>
+        <h1 class="titulo-centrado">Creación Nuevo Producto</h1>
 
         <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
-        <form id="userForm" autocomplete="off">
+        <form id="productForm" autocomplete="off">
 
             <div class="form-group">
-                <span class="material-icons">person</span>
-                <input type="text" id="name-user" name="name-user" placeholder="Nombre" />
+                <span class="material-icons">inventory_2</span>
+                <input type="text" id="nombre_producto" name="nombre_producto" placeholder="Nombre Producto" />
             </div>
 
             <div class="form-group">
-                <span class="material-icons">badge</span>
-                <input type="text" id="identification" name="identification" placeholder="Identificación" />
+                <span class="material-icons">attach_money</span>
+                <input type="text" id="precio_producto" name="precio_producto" placeholder="Precio" />
             </div>
 
             <div class="form-group">
-                <span class="material-icons">email</span>
-                <input type="email" id="email" name="email" placeholder="Correo electrónico" />
+                <span class="material-icons">shopping_cart_checkout</span>
+                <input type="text" id="precio_venta" name="precio_venta" placeholder="Precio Venta" />
+            </div>
+
+            <div class="form-group">
+                <span class="material-icons">layers</span>
+                <input type="text" id="cantidad" name="cantidad" placeholder="Cantidad" />
+            </div>
+
+            <div class="form-group">
+                <span class="material-icons">local_shipping</span>
+                <input type="text" id="nombre_proveedor" name="nombre_proveedor" placeholder="Nombre Proveedor" />
             </div>
             
-            <div class="form-group">
-                <span class="material-icons">lock</span>
-                <input type="password" id="password" name="password" placeholder="Contraseña" />
-            </div>
-
-            <div class="form-group">
-                <span class="material-icons">person_outline</span>
-                <select id="rol" name="rol">
-                    <option value="" disabled selected>Seleccionar rol</option>
-                    <!--option value="administrador">Administrador</option>
-                    <option value="cajero">Cajero</option>
-                    <option value="mesero">Mesero</option-->
-                </select>
-            </div>
 
             <div class="form-group">
                 <span class="material-icons">location_on</span>
@@ -64,15 +60,15 @@
 
         <div class="contenedor-botones-sede">
             <button class="btn-volver-sede" id="btnVolverSede"
-                onclick="window.location.href='../admin/ModificacionUsuario.html'">
+                onclick="window.location.href='../admin/ProductosCreados.html'">
                 <span class="material-icons">arrow_back</span> Volver
             </button>
-            <button class="btn-crear-usuario" id="btnCrearUsuario">
+            <button class="btn-crear-producto" id="btnCrearProducto">
                 <span class="material-icons">library_add</span> Crear
             </button>
         </div>
 
-        <script src="../js/NuevoUsuario.js"></script>
+        <script src="../js/NuevoProducto.js"></script>
 </body>
 
 </html>

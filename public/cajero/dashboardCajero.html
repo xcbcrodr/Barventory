@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Administrador Bar-ventory</title>
+    <title>Cajero Bar-ventory</title>
     <!--link rel="stylesheet" href="../css/styles.css" /-->
     <link rel="stylesheet" href="../css/styles2.css" />
     <link rel="stylesheet" href="../css/responsive.css" />
@@ -14,7 +14,7 @@
 
 <body>
     <div class="container">
-        <h1 class="titulo-centrado">Módulo Administración</h1>
+        <h1 class="titulo-centrado">Módulo Cajero</h1>
         <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
         <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
         <div class="opciones">
@@ -41,12 +41,6 @@
                 <h3>Mesas</h3>
                 <p>Control de disponibilidad</p>
             </button>
-
-            <!--button class="opcion" id="btnReportes">
-                <span class="material-icons">assessment</span>
-                <h3>Reportes</h3>
-                <p>Configurar, generar y descargar reportes en múltiples formatos</p>
-            </button-->
             
         </div>
 
@@ -66,7 +60,10 @@
         const token = localStorage.getItem("token");
         const rol = localStorage.getItem("rol");
 
-        
+        /*if (!token || rol !== "Administrador") {
+          alert("Acceso denegado. No tienes permiso para estar aquí.");
+          window.location.href = "/index.html"; //
+        }*/
     </script>
 </body>
 
