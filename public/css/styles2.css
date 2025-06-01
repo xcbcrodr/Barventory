@@ -416,7 +416,8 @@ th {
 .btn-crear-mesa,
 .btn-actualizar-sede,
 .btn-actualizar-producto,
-.btn-actualizar-usuario{
+.btn-actualizar-usuario,
+.registrar-pedido-btn{
     background-color: var(--cerveza);
     color: var(--texto-claro);
     border: none;
@@ -436,7 +437,8 @@ th {
 .boton-crear-producto:hover,
 .boton-actualizar-sede:hover,
 .boton-actualizar-usuario:hover,
-.boton-actualizar-producto:hover{
+.boton-actualizar-producto:hover
+.registrar-pedido-btn:hover{
     background-color: #a5710d;
 }
 
@@ -927,4 +929,50 @@ th {
 .cantidad-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+/* public/css/styles2.css (o tu archivo CSS principal) */
+
+/* Estilo para la fila de productos agotados */
+tr.agotado {
+    background-color: #fdd; /* Fondo rojo claro */
+    opacity: 0.6; /* Un poco transparente */
+    text-decoration: line-through; /* Tachado del texto */
+    color: #888; /* Texto gris */
+}
+
+tr.agotado .cantidad-input,
+tr.agotado .btn-agregar-pedido {
+    cursor: not-allowed; /* Cambia el cursor a "prohibido" */
+}
+
+/* Opcional: Estilo para el input de cantidad y el botón */
+.cantidad-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
+.btn-agregar-pedido {
+    background-color: #C28717;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-agregar-pedido:hover:not(:disabled) {
+    background-color: #C28717;
+}
+
+.btn-agregar-pedido:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }

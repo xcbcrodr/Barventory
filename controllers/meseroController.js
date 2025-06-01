@@ -58,17 +58,55 @@ exports.getProductosPorSede = async (req, res) => {
 };
 
 exports.registrarPedido = async (req, res) => {
-    try {
-        const { idMesa, productos } = req.body; 
-        console.log('DEBUG MESERO_CONTROLLER: Pedido recibido para la mesa:', idMesa, 'Productos:', productos);
-        
-        // Aquí iría la lógica para insertar el pedido en la base de datos
-        // ... (Tu implementación para pedidos) ...
+    const client = await require('../utils/db'); // Asume que client es un pool o una conexión ya abierta
+    const dbClient = await client.connect(); // Obtener una conexión del pool
 
-        res.json({ message: 'Pedido registrado exitosamente' }); 
+    try {
+        const { idMesa, productos } = req.body;
+        const idSedeMesero = req.user.idsede; // Asegúrate de que este dato sigue siendo accesible y válido
+
+        console.log('DEBUG MESERO_CONTROLLER: Pedido recibido para la mesa:', idMesa, 'Productos:', productos);
+        console.log('DEBUG MESERO_CONTROLLER: Mesero de sede:', idSedeMesero);
+
+        await dbClient.query('BEGIN'); // Iniciar una transacción para asegurar la integridad
+
+        // 1. Insertar el encabezado del pedido (ej. en una tabla 'pedido')
+        const pedidoInsertQuery = 'INSERT INTO pedido(id_mesa, idsede, fecha_pedido, total) VALUES($1, $2, NOW(), $3) RETURNING id_pedido';
+        let totalPedido = 0; // Calcularemos el total
+        
+        // Antes de insertar el encabezado, verifica stock y calcula el total
+        for (const item of productos) {
+            const stockCheck = await dbClient.query('SELECT cantidad, precio_venta FROM producto WHERE id_producto = $1 AND idsede = $2 FOR UPDATE', [item.idProducto, idSedeMesero]);
+            if (stockCheck.rows.length === 0 || stockCheck.rows[0].cantidad < item.cantidad) {
+                throw new Error(`Stock insuficiente para el producto ID ${item.idProducto} o producto no encontrado en la sede.`);
+            }
+            totalPedido += parseFloat(stockCheck.rows[0].precio_venta) * item.cantidad;
+        }
+
+        const pedidoResult = await dbClient.query(pedidoInsertQuery, [idMesa, idSedeMesero, totalPedido]);
+        const idPedido = pedidoResult.rows[0].id_pedido;
+
+        // 2. Insertar los detalles del pedido (ej. en una tabla 'detalle_pedido') y actualizar stock
+        for (const item of productos) {
+            const detalleInsertQuery = 'INSERT INTO detalle_pedido(id_pedido, id_producto, cantidad, precio_unitario) VALUES($1, $2, $3, $4)';
+            const updateStockQuery = 'UPDATE producto SET cantidad = cantidad - $1 WHERE id_producto = $2 AND idsede = $3';
+
+            const productoData = await dbClient.query('SELECT precio_venta FROM producto WHERE id_producto = $1', [item.idProducto]);
+            const precioUnitario = parseFloat(productoData.rows[0].precio_venta);
+
+            await dbClient.query(detalleInsertQuery, [idPedido, item.idProducto, item.cantidad, precioUnitario]);
+            await dbClient.query(updateStockQuery, [item.cantidad, item.idProducto, idSedeMesero]);
+        }
+
+        await dbClient.query('COMMIT'); // Confirmar la transacción
+        res.json({ message: 'Pedido registrado exitosamente', idPedido: idPedido });
+
     } catch (error) {
-        console.error('Error al registrar pedido:', error);
-        res.status(500).json({ error: 'Error interno del servidor al registrar el pedido' });
+        await dbClient.query('ROLLBACK'); // Revertir la transacción si algo falla
+        console.error('Error al registrar pedido en el backend:', error);
+        res.status(500).json({ error: `Error interno del servidor al registrar el pedido: ${error.message}` });
+    } finally {
+        dbClient.release(); // Liberar la conexión al pool
     }
 };
 

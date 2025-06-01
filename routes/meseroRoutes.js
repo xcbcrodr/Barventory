@@ -2,10 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const meseroController = require('../controllers/meseroController');
-const authMiddleware = require('../middlewares/authMiddleware'); 
+const { authenticateToken, checkRole } = require('../middlewares/authMiddleware');
 
-router.use(authMiddleware.authenticateToken);
-router.use(authMiddleware.checkRole(['Mesero']));
+router.use(authenticateToken);
+router.use(checkRole(['Mesero']));
 
 router.get('/mesas', meseroController.getMesasPorSede);
 router.get('/productos', meseroController.getProductosPorSede);
