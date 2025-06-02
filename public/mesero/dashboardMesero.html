@@ -12,8 +12,7 @@
 </head>
 
 <body>
-    <!--div class="login-container"-->    
-    <div class="productos-container">
+    <div class="login-container">
         <h1 class="titulo-centrado">Registro de Pedidos</h1>
         <div class="logo-container">
             <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" class="logo-centrado" />
@@ -44,7 +43,7 @@
                         </tr>
                     </thead>
                     <tbody id="tablaProducto">
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
@@ -55,14 +54,15 @@
                             <th>Producto</th>
                             <th>Cantidad Solicitada</th>
                             <th>Precio Total</th>
-                        </tr>
+                            <th>Acciones</th> </tr>
                     </thead>
-                    <tbody id="tablaPedido"> </tbody>
+                    <tbody id="tablaPedido">
+                        </tbody>
                 </table>
+                <p>Total del Pedido: <span id="totalPedidoSpan">0</span></p> 
             </div>
 
-            <button class="registrar-pedido-btn" id="btnCrearSede">
-                <span class="material-icons">library_add</span> Registrar Pedido
+            <button class="registrar-pedido-btn" id="btnRegistrarPedido"> <span class="material-icons">library_add</span> Registrar Pedido
             </button>
         </div> 
         
@@ -73,16 +73,6 @@
 
     <script src="../js/dashboardMesero.js" defer></script>
 
-    <script>
-        document.getElementById("usuarioNombre").textContent =
-            localStorage.getItem("nombreUsuario") || "Usuario";
-    </script>
-
-    <script>
-        const token = localStorage.getItem("token");
-        const rol = localStorage.getItem("rol");
-    </script>
-
-</body>
+    </body>
 
 </html>
