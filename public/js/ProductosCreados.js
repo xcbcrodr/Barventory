@@ -1,107 +1,151 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const API_URL = "http://localhost:3000/auth/sedes";
-    const tablaSedes = document.getElementById("tablaSedes");
-    //const sedesContainer = document.querySelector('.sedes-container');
+    const API_URL = "http://localhost:3000/auth/productos";
+    const tablaProducto = document.getElementById("tablaProducto");
+    const productosContainer = document.querySelector('.productos-container');
+    const searchInput = document.getElementById('buscarProducto');
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim(); 
+        filtrarProductos(searchTerm);
+    });
+    console.log("--> productosCreados.js: DOMContentLoaded ejecutado.");
 
     function mostrarMensaje(mensaje, esError = false) {
-        const mensajeElement = document.createElement('div');
-        mensajeElement.className = esError ? 'error-mensaje' : 'info-mensaje';
-        mensajeElement.textContent = mensaje;
-        const mensajeAnterior = sedesContainer.querySelector('.error-mensaje, .info-mensaje');
-        if (mensajeAnterior) mensajeAnterior.remove();
-        sedesContainer.prepend(mensajeElement);
-    }
+                const mensajeElement = document.createElement('div');
+                mensajeElement.className = esError ? 'error-mensaje' : 'info-mensaje';
+                mensajeElement.textContent = mensaje;
+                const mensajeAnterior = productosContainer.querySelector('.error-mensaje, .info-mensaje');
+                if (mensajeAnterior) mensajeAnterior.remove();
+                productosContainer.prepend(mensajeElement);
+        
+                // Hacer que el mensaje desaparezca después de 3 segundos (3000 milisegundos)
+                setTimeout(() => {
+                    if (productosContainer.contains(mensajeElement)) {
+                        mensajeElement.remove();
+                    }
+                }, 3000);
+            }
 
-    function crearFilaSede(sede) {
-        return `
-            <tr id="sede-${sede.id}">
-                <td>${sede.nombre}</td>
-                <td>${sede.direccion || "Avenida falsa 6 g este 30 89, Chia"}</td>
-                <td>
-                    <button class="btn-editar" data-id="${sede.id}">✏️ Editar</button>
-                    <button class="btn-eliminar" data-id="${sede.id}">🗑️ Eliminar</button>
-                </td>
-            </tr>
-        `;
-    }
+        let listaProductos = []; 
 
-    async function cargarSedes() {
-        //mostrarMensaje("Cargando sedes...", false);
-        try {
-            const response = await fetch(API_URL, {
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem("token")}` }
-            });
-            const sedes = await response.json();
-            /*console.log("Datos recibidos:", sedes);  // ← Verifica aquí los campos
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}: ${response.statusText}`);
-            }
-
-            const sedes = await response.json(); 
-            // La respuesta es directamente el array
-            console.table(sedes);
-
-
-            if (!sedes || sedes.length === 0) {
-                mostrarMensaje("No hay sedes registradas.");
-                tablaSedes.innerHTML = '<tr><td colspan="3">No se encontraron sedes</td></tr>';
-                return;
-            }
-*/
-            mostrarSedes(sedes);
-        } catch (error) {
-            console.error("Error al cargar sedes:", error);
-            mostrarMensaje(`Error al cargar sedes: ${error.message}`, true);
-            tablaSedes.innerHTML = '<tr><td colspan="3">Error al cargar datos</td></tr>';
-        }
-    }
-
-    function mostrarSedes(sedes) {
-        tablaSedes.innerHTML = sedes.map(crearFilaSede).join('');
-
-        tablaSedes.addEventListener('click', async (event) => {
-            const target = event.target;
-            const idSede = target.dataset.id;
-
-            if (target.classList.contains('btn-editar')) {
-                window.location.href = `EditarSede.html?id=${idSede}`;
-            } else if (target.classList.contains('btn-eliminar')) {
-                if (confirm('¿Estás seguro de eliminar esta sede?')) {
-                    await eliminarSede(idSede);
+        async function cargarProductos() {
+            console.log("--> cargarProductos: Iniciando la petición GET.");
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+                console.log("--> cargarProductos: Respuesta recibida:", response);
+                const responseData = await response.json();
+                console.log("--> cargarProductos: Datos JSON recibidos:", responseData);
+        
+                if (responseData && responseData.success && Array.isArray(responseData.data)) {
+                    listaProductos = responseData.data; // Almacenar la lista de productos
+                    mostrarProductos(listaProductos); // Mostrar todos los productos inicialmente
+                } else {
+                    console.error("--> cargarProductos: Formato de respuesta incorrecto:", responseData);
+                    mostrarMensaje("Error al cargar productos: Formato de respuesta incorrecto", true);
+                    tablaProducto.innerHTML = '<tr><td colspan="6">Error al cargar datos</td></tr>'; // Ajustar colspan según el número de columnas
                 }
+        
+            } catch (error) {
+                console.error("--> cargarProductos: Error en la petición:", error);
+                mostrarMensaje(`Error al cargar productos: ${error.message}`, true);
+                tablaProducto.innerHTML = '<tr><td colspan="6">Error al cargar datos</td></tr>'; // Ajustar colspan según el número de columnas
             }
+        }
+        
+        function filtrarProductos(searchTerm) {
+            const productosFiltrados = listaProductos.filter(producto => {
+                // Verificar si el término de búsqueda coincide con alguna propiedad del producto (nombre, proveedor, etc.)
+                return (
+                    producto.nombre_p.toLowerCase().includes(searchTerm) ||
+                    producto.proveedor_p.toLowerCase().includes(searchTerm) ||
+                    String(producto.cantidad_p).toLowerCase().includes(searchTerm) ||
+                    String(Number(producto.precio_p).toFixed(0)).toLowerCase().includes(searchTerm) ||
+                    String(Number(producto.precio_v).toFixed(0)).toLowerCase().includes(searchTerm)
+                    // Puedes agregar más propiedades aquí si deseas filtrar por ellas
+                );
+            });
+            mostrarProductos(productosFiltrados); // Mostrar solo los productos filtrados
+        }
+      
+      function mostrarProductos(productos) {
+        console.log("--> mostrarProductos: Recibiendo productos:", productos); 
+        tablaProducto.innerHTML = productos.map(crearFilaProducto).join('');
+      
+        tablaProducto.addEventListener('click', async (event) => {
+                      const target = event.target;
+                      const idProducto = target.dataset.id;
+                  
+                      if (target.classList.contains('btn-editar')) {
+                        window.location.href = `EditarProducto.html?id=${idProducto}`;
+                      } else if (target.classList.contains('btn-eliminar')) {
+                        if (confirm('¿Estás seguro de eliminar esta producto?')) {
+                          await eliminarProducto(idProducto, target); // <---- ¡Pasamos 'target' como 'botonEliminar'!
+                        }
+                      }
+                    });
+      }
+
+      async function eliminarProducto(id, botonEliminar) {
+        try {
+          const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+            headers: {
+              "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+          });
+    
+          if (!response.ok) {
+            const errorData = await response.json();
+            const errorMessage = errorData?.error || 'Error al eliminar la producto';
+            throw new Error(errorMessage);
+          }
+    
+          mostrarMensaje('Producto eliminado correctamente');
+    
+          // Encuentra la fila del botón
+          const filaEliminada = botonEliminar.closest("tr");
+          if (filaEliminada) {
+            filaEliminada.classList.add('fade-out');
+            setTimeout(() => filaEliminada.remove(), 300);
+          }
+        } catch (error) {
+          console.error("Error al eliminar:", error);
+          mostrarMensaje(`Error al eliminar producto: ${error.message}`, true);
+        }
+      }
+    
+      cargarProductos();
+    });
+
+    function crearFilaProducto(producto) {
+        const precioFormateado = Number(producto.precio_p).toLocaleString('es-CO', {
+          style: 'currency',
+          currency: 'COP', // Puedes cambiar a 'USD' u otra moneda si es necesario
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
         });
-    }
-
-    async function eliminarSede(id, botonEliminar) {
-        try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`
-                }
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                const errorMessage = errorData?.error || 'Error al eliminar la sede';
-                throw new Error(errorMessage);
-            }
-    
-            mostrarMensaje('Sede eliminada correctamente');
-    
-            // Encuentra la fila del botón
-            const filaEliminada = botonEliminar.closest("tr");
-            if (filaEliminada) {
-                filaEliminada.classList.add('fade-out');
-                setTimeout(() => filaEliminada.remove(), 300);
-            }
-        } catch (error) {
-            console.error("Error al eliminar:", error);
-            mostrarMensaje(`Error al eliminar sede: ${error.message}`, true);
-        }
-    }
-    
-    cargarSedes();
-});
+      
+        const precioVentaFormateado = Number(producto.precio_v).toLocaleString('es-CO', {
+          style: 'currency',
+          currency: 'COP',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        });
+      
+        return `
+        <tr id="producto-${producto.id}">
+            <td>${producto.nombre_p}</td>
+            <td>${precioFormateado}</td>
+            <td>${precioVentaFormateado}</td>
+            <td>${producto.cantidad_p}</td>
+            <td>${producto.proveedor_p}</td>
+            <td>${producto.nombre_sede}</td> <td>
+                <button class="btn-editar" data-id="${producto.id}">✏️ Editar</button>
+                <button class="btn-eliminar" data-id="${producto.id}">🗑️ Eliminar</button>
+            </td>
+        </tr>
+    `;
+      }

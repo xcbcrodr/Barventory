@@ -2,10 +2,78 @@
 const client = require("../utils/db");
 const jwt = require("jsonwebtoken");
 
-// Configuración JWT (debes tener esto en tus variables de entorno)
 const JWT_SECRET = process.env.JWT_SECRET || "tu_secreto_seguro";
 
-// Función para obtener roles
+exports.login = async (req, res) => {
+    const { identificacion, password } = req.body; // <-- CAMBIO 1: Esperamos 'identificacion'
+    console.log('*** Inicio de la función login ***');
+    console.log('Identificacion recibida en la API:', identificacion); // <-- Log actualizado
+    console.log('Password recibido en la API:', password); 
+    try {
+        // ... (resto de tu código)
+
+        // CORRECCIÓN FINAL: Cambiar 'WHERE email = $1' a 'WHERE identificacion = $1'
+        const userResult = await client.query('SELECT id_usuario, identificacion, nombre, email, contrasenia, idrol, idsede FROM usuario WHERE identificacion = $1', [identificacion]);
+        const user = userResult.rows[0];
+
+        if (!user) {
+            console.log('Usuario NO encontrado en la base de datos para el email:', identificacion); // <-- Confirma que este log está
+            return res.status(400).json({ error: 'Credenciales inválidas.' });
+        }
+        console.log('Usuario ENCONTRADO. Email del usuario en DB:', user.identificacion); // <-- Confirma que este log está
+        console.log('Contraseña de la DB para este usuario:', user.contrasenia); // <-- Confirma que este log está (solo para depuración)
+
+        const isMatch = (password === user.contrasenia); // Aquí ya debería estar corregido
+        console.log('Resultado de la comparación de contraseñas (isMatch):', isMatch); // <-- Confirma que este log está
+
+        if (!isMatch) {
+            console.log('Contraseña NO coincide para usuario con identificacion:', user.identificacion);
+            return res.status(400).json({ error: 'Credenciales inválidas.' });
+        }
+
+        console.log('Login exitoso. Generando token...'); 
+        console.log('ID de rol del usuario (user.idrol):', user.idrol);
+
+        const roleResult = await client.query('SELECT nombre_rol FROM rol WHERE id_rol = $1', [user.idrol]);
+        const roleName = roleResult.rows[0] ? roleResult.rows[0].nombre_rol : null;
+
+        if (!roleName) {
+            console.error(`Error: No se encontró nombre de rol para idrol: ${user.idrol}`);
+            return res.status(500).json({ error: 'No se pudo determinar el rol del usuario.' });
+        }
+
+        const payload = {
+            id: user.id_usuario,
+            identificacion: user.identificacion,
+            nombre: user.nombre,
+            email: user.email,
+            rol: roleName,
+            idsede: user.idsede
+        };
+
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+
+        console.log('Contenido de la respuesta JSON enviada al frontend:', {
+            message: 'Autenticación exitosa',
+            token,
+            rol: roleName,
+            nombreUsuario: user.nombre,
+            idsede: user.idsede
+        });
+
+        res.json({
+            message: 'Autenticación exitosa',
+            token,
+            rol: roleName,
+            nombreUsuario: user.nombre,
+            idsede: user.idsede
+        });
+    } catch (error) {
+        console.error('*** ERROR CATCHED EN LOGIN:', error); // <-- Confirma que este log está
+        res.status(500).json({ error: 'Error interno del servidor en el login.' });
+    }
+};
+
 exports.getRoles = async (req, res) => {
   try {
     const query = "SELECT id_rol AS id, nombre_rol AS nombre FROM rol";
@@ -19,10 +87,10 @@ exports.getRoles = async (req, res) => {
   }
 };
 
-// Función para obtener sedes
 exports.getSedes = async (req, res) => {
   try {
-    const query = "SELECT id_sede AS id, nombre_sede AS nombre FROM sede";
+    const query =
+      "SELECT id_sede AS id, nombre_sede AS nombre, direccion AS direccion FROM sede";
     const result = await client.query(query);
     res.json(result.rows);
   } catch (err) {
@@ -33,10 +101,8 @@ exports.getSedes = async (req, res) => {
   }
 };
 
-// Función para obtener perfil de usuario (protegida)
 exports.getProfile = async (req, res) => {
   try {
-    // El middleware authenticateToken ya verificó el token y añadió req.user
     const user = req.user;
 
     res.json({
@@ -44,7 +110,7 @@ exports.getProfile = async (req, res) => {
       nombre: user.nombre,
       email: user.email,
       rol: user.rol,
-      sede: user.sede,
+      idsede: user.idsede,
     });
   } catch (err) {
     console.error("Error al obtener perfil:", err);
@@ -52,52 +118,23 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-/* Código implementado luego de modificación realizada
-req.user = {
-  id: user.rows[0].id_usuario,
-  identificacion: user.rows[0].identificacion,
-  nombre: user.rows[0].nombre,
-  email: user.rows[0].email,
-  rol: user.rows[0].nombre_rol, // nombre real del rol
-};*/
-
-// Dashboard de administrador (protegido + checkRole)
-/*exports.adminDashboard = async (req, res) => {
-  try {
-    // Solo accesible para administradores (el middleware checkRole ya verificó esto)
-    res.json({
-      message: "Bienvenido al panel de administración",
-      data: {
-        usuariosRegistrados: 150,
-        ventasHoy: 42,
-      },
-    });
-  } catch (err) {
-    console.error("Error en dashboard admin:", err);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
-};*/
-
-const path = require("path"); // Añade al inicio del archivo
+const path = require("path");
 
 exports.adminDashboard = (req, res) => {
   try {
-    // Envía el archivo HTML estático
-    res.sendFile(path.join(__dirname, "../admin/dashboardAdmin.html"));
+    res.sendFile(path.join(__dirname, "../public/admin/dashboardAdmin.html"));
   } catch (err) {
-    console.error("Error al cargar el dashboard:", err);
+    console.error("Error al cargar el dashboard (admin):", err);
     res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-// Dashboard de cajero (protegido + checkRole)
 exports.cashierDashboard = async (req, res) => {
   try {
-    // Solo accesible para cajeros
     res.json({
       message: "Bienvenido al panel de cajero",
       data: {
-        ventasPendientes: 5, // Ejemplo
+        ventasPendientes: 5,
         totalVendidoHoy: 1200000,
       },
     });
@@ -107,85 +144,4 @@ exports.cashierDashboard = async (req, res) => {
   }
 };
 
-/*Dashboard de mesero (protegido + checkRole)
-exports.waitressDashboard = async (req, res) => {
-  try {
-    // Solo accesible para meseros
-    res.json({
-      message: 'Bienvenido al panel de mesero',
-      data: {
-        mesasAtendidas: 5
-      }
-    });
-  } catch (err) {
-    console.error('Error en dashboard mesero:', err);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-};
-*/
-
-// Función para login
-exports.login = async (req, res) => {
-  const { username, password, rol, sede } = req.body;
-
-  try {
-    const queryText = `
-    SELECT
-        u.id_usuario,
-        u.identificacion,
-        u.nombre,
-        u.email,
-        r.nombre_rol,
-        s.nombre_sede
-    FROM
-        usuario u
-    INNER JOIN
-        rol r ON u.idrol = r.id_rol
-    INNER JOIN
-        sede s ON u.idsede = s.id_sede
-    WHERE
-        u.identificacion = $1
-        AND u.contrasenia = $2
-        AND u.idrol = $3
-        AND u.idsede = $4
-`;
-
-    const values = [username, password, rol, sede];
-
-    const result = await client.query(queryText, values);
-
-    if (result.rows.length > 0) {
-      const user = result.rows[0];
-
-      // Generar token JWT
-      const token = jwt.sign(
-        {
-          id: user.id_usuario,
-          nombre: user.nombre,
-          email: user.email,
-          rol: user.nombre_rol,
-          sede: user.nombre_sede,
-        },
-        JWT_SECRET,
-        { expiresIn: "1h" }
-      );
-
-      res.json({
-        success: true,
-        token,
-        user: {
-          id: user.id_usuario,
-          nombre: user.nombre,
-          rol: user.nombre_rol,
-          sede: user.nombre_sede,
-        },
-        redirectUrl: `/admin/dashboardAdmin.html`, // Coincide con la ruta en authRoutes.js
-      });
-    } else {
-      res.status(401).json({ error: "Credenciales incorrectas" });
-    }
-  } catch (error) {
-    console.error("Error en login:", error);
-    return res.status(500).json({ error: "Error interno del servidor" });
-  }
-};
+module.exports = exports;

@@ -2,96 +2,74 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Administrador Bar-ventory</title>
-  <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="stylesheet" href="../css/responsive.css" />
-<<<<<<< HEAD
-  <!-- Fuente Roboto desde Google Fonts -->
-=======
->>>>>>> develop
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Administrador Bar-ventory</title>
+    <link rel="stylesheet" href="../css/styles2.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
-  <div class="container">
-<<<<<<< HEAD
-    <h1>Bienvenido Administrador , <span id="usuarioNombre"></span></h1>
+    <div class="container">
+        <h1 class="titulo-centrado">Módulo Administración</h1>
+        <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+        <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
 
-    <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+        <div class="opciones">
+            <button class="opcion" id="btnUsuarios">
+                <span class="material-icons">person</span>
+                <h3>Usuarios</h3>
+                <p>Gestión de roles y usuarios</p>
+            </button>
 
-    <div class="opciones">
-      <button class="opcion" onclick="verUsuarios()">
-=======
-    <h1 class="titulo-centrado">Módulo Administración</h1>
-    <img src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
-    <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
-    <div class="opciones">
-      <button class="opcion" id="btnUsuarios">
->>>>>>> develop
-        <span class="material-icons">person</span>
-        <h3>Usuarios</h3>
-        <p>Gestión de roles y usuarios</p>
-      </button>
+            <button class="opcion" id="btnSedes">
+                <span class="material-icons">store</span>
+                <h3>Sedes</h3>
+                <p>Consultar, editar y eliminar sedes</p>
+            </button>
 
-<<<<<<< HEAD
-      <button class="opcion" onclick="verSedes()">
-=======
-      <button class="opcion" id="btnSedes">
->>>>>>> develop
-        <span class="material-icons">store</span>
-        <h3>Sedes</h3>
-        <p>Consultar, editar y eliminar sedes</p>
-      </button>
+            <button class="opcion" id="btnInventario">
+                <span class="material-icons">local_drink</span>
+                <h3>Inventario</h3>
+                <p>Añadir, modificar y listar productos</p>
+            </button>
 
-<<<<<<< HEAD
-      <button class="opcion" onclick="verMesas()">
-=======
-      <button class="opcion" id="btnMesas">
->>>>>>> develop
-        <span class="material-icons">event_seat</span>
-        <h3>Mesas</h3>
-        <p>Control de disponibilidad</p>
-      </button>
-
-<<<<<<< HEAD
-      <button class="opcion" onclick="verInventario()">
-=======
-      <button class="opcion" id="btnInventario">
->>>>>>> develop
-        <span class="material-icons">local_drink</span>
-        <h3>Inventario</h3>
-        <p>Añadir, modificar y listar productos</p>
-      </button>
+            <button class="opcion" id="btnMesas">
+                <span class="material-icons">event_seat</span>
+                <h3>Mesas</h3>
+                <p>Control de disponibilidad</p>
+            </button>
+        </div>
+        <div class="reportes-container">
+            <button class="opcion" id="btnReportes">
+                <span class="material-icons">assessment</span> <h3>Reportes</h3>
+                <p>Configurar, generar y descargar reportes en múltiples formatos</p>
+            </button>
+        </div>
+        <button class="salir" id="btnSalir">
+            <span class="material-icons">logout</span> Salir
+        </button>
     </div>
 
-    <button class="salir" id="btnSalir">
-      <span class="material-icons">logout</span> Salir
-    </button>
-  </div>
+    <script src="../js/dashboardAdmin.js"></script>
 
-  <script src="../js/dashboardAdmin.js"></script>
+    <script>
+        document.getElementById("usuarioNombre").textContent =
+            localStorage.getItem("nombreUsuario") || "Usuario";
+    </script>
 
-  <script>
-    document.getElementById("usuarioNombre").textContent =
-      localStorage.getItem("nombreUsuario") || "Usuario";
-  </script>
+    <script>
+        const token = localStorage.getItem("token");
+        const rol = localStorage.getItem("rol");
 
-<<<<<<< HEAD
-  <!-- Código experimental para comprobar que funcione el acceso restringido a un usuario directamente al HTML-->
-=======
->>>>>>> develop
-  <script>
-    const token = localStorage.getItem("token");
-    const rol = localStorage.getItem("rol");
-
-    /*if (!token || rol !== "Administrador") {
-      alert("Acceso denegado. No tienes permiso para estar aquí.");
-      window.location.href = "/index.html"; // 
-    }*/
-  </script>
+        // Tu lógica de validación comentada se mantiene
+        /*if (!token || rol !== "Administrador") {
+          alert("Acceso denegado. No tienes permiso para estar aquí.");
+          window.location.href = "/index.html"; //
+        }*/
+    </script>
 </body>
 
 </html>

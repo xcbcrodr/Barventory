@@ -5,7 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login | Bienvenido a Bar-ventory</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles2.css" />
+  <!--link rel="stylesheet" href="css/styles.css" /-->
   <link rel="stylesheet" href="css/responsive.css" />
 
   <!-- Fuente Roboto desde Google Fonts -->
@@ -17,15 +18,10 @@
 
 <body>
   <div class="login-container">
-<<<<<<< HEAD
     <h2>Bienvenido a Bar-ventory</h2>
-=======
-    <h1>Bienvenido a Barventory</h1>
->>>>>>> develop
 
-    <img src="img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+    <img class="logo-unificado" src="img/Logo Bar-ventory.jpg" alt="Logo Bar" />
 
-    <!--form id="loginForm" method="POST" action="/auth/login"-->
     <form id="loginForm" autocomplete="off">
 
       <div class="form-group">
@@ -38,13 +34,10 @@
         <input type="password" id="password" name="password" placeholder="Contraseña" />
       </div>
 
-      <div class="form-group">
+      <!--div class="form-group">
         <span class="material-icons">person_outline</span>
         <select id="rol" name="rol">
           <option value="" disabled selected>Selecciona tu rol</option>
-          <!--option value="administrador">Administrador</option>
-                    <option value="cajero">Cajero</option>
-                    <option value="mesero">Mesero</option-->
         </select>
       </div>
 
@@ -52,10 +45,8 @@
         <span class="material-icons">location_on</span>
         <select id="sede" name="sede">
           <option value="" disabled selected>Selecciona tu sede</option>
-          <!--option value="chia">Chía</option>
-                    <option value="usaquen">Usaquén</option-->
         </select>
-      </div>
+      </div-->
       <p id="errorMessage" style="color: #e74c3c; display: none; margin-bottom: 10px"></p>
 
       <button type="submit">Acceder</button>
@@ -64,7 +55,7 @@
 
   <script src="/js/login.js"></script>
 
-  <script>
+  <!--script>
     document.addEventListener("DOMContentLoaded", () => {
       // Fetch roles desde el backend
       fetch("http://localhost:3000/auth/roles")
@@ -120,7 +111,7 @@
           document.getElementById("errorMessage").style.display = "block";
         });
     });
-  </script>
+  </script-->
 </body>
 
 </html>

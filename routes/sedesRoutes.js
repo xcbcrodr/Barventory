@@ -13,12 +13,6 @@ router.use(authenticateToken);
 // RUTAS PROTEGIDAS (requieren autenticación y rol)
 // =============================================
 
-// 1. Obtener todas las sedes (solo Administrador)
-/*router.get("/", checkRole(["Administrador"]), (req, res, next) => {
-  // Saltar temporalmente el middleware de autenticación
-  sedesController.obtenerTodasSedes(req, res);
-});*/
-
 router.get("/", checkRole(["Administrador"]), (req, res, next) => {
   console.log("Debug Sedes - Inicio de petición");
   // Mantenemos el middleware original pero añadimos debug
@@ -42,11 +36,8 @@ router.get(
 );
 
 // 3. Crear nueva sede (Solo Administrador)
-router.post(
-  "/",
-  checkRole(["Administrador"]),
-  sedesController.crearSede
-);
+
+router.post("/", sedesController.crearSede);
 
 // 4. Actualizar sede (solo Administrador)
 router.put(

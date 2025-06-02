@@ -1,75 +1,135 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const formularioCrearUsuario = document.getElementById("usuarioForm");
-    const nombreInput = document.getElementById("nombre");
-    const identificacionInput = document.getElementById("identificacion");
-    const contrasenaInput = document.getElementById("contrasenia");
-    /*const errorNombre = document.getElementById("error-nombre");
-    const errorDireccion = document.getElementById("error-direccion");*/
+// NuevoUsuario.js
 
-    formularioCrearUsuario.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        let isValid = true;
-
-        // Validar el nombre
-        if (nombreInput.value.trim() === "") {
-            mostrarError(errorNombre, "El nombre es obligatorio.");
-            isValid = false;
-        } else if (nombreInput.value.trim().length > 100) {
-            mostrarError(errorNombre, "El nombre no puede tener más de 100 caracteres.");
-            isValid = false;
+document.addEventListener("DOMContentLoaded", async function () {
+    const API_URL_ROLES = "http://localhost:3000/auth/usuarios/roles";
+    const API_URL_SEDES = "http://localhost:3000/auth/usuarios/sedes";
+    const API_URL_USUARIOS = "http://localhost:3000/auth/usuarios/";
+  
+    const rolSelect = document.getElementById("rol");
+    const sedeSelect = document.getElementById("sede");
+    const userForm = document.getElementById("userForm");
+    const errorMessage = document.getElementById("errorMessage");
+    const btnCrearUsuario = document.getElementById("btnCrearUsuario");
+  
+    // Función para cargar los roles desde la API
+    async function cargarRoles() {
+      try {
+        const response = await fetch(API_URL_ROLES, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData?.error || `Error al cargar roles: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success && Array.isArray(data.data)) {
+          data.data.forEach((rol) => {
+            const option = document.createElement("option");
+            option.value = rol.id_rol; // Usar el id_rol como valor
+            option.textContent = rol.nombre_rol; // Mostrar el nombre del rol
+            rolSelect.appendChild(option);
+          });
         } else {
-            limpiarError(errorNombre);
+          throw new Error("Formato de respuesta de roles inválido");
         }
-
-        // Validar la dirección
-        if (direccionInput.value.trim() === "") {
-            mostrarError(errorDireccion, "La dirección es obligatoria.");
-            isValid = false;
-        } else if (direccionInput.value.trim().length > 255) {
-            mostrarError(errorDireccion, "La dirección no puede tener más de 255 caracteres.");
-            isValid = false;
+      } catch (error) {
+        console.error("Error al cargar roles:", error);
+        mostrarMensaje(error.message, true);
+      }
+    }
+  
+    // Función para cargar las sedes desde la API
+    async function cargarSedes() {
+      try {
+        const response = await fetch(API_URL_SEDES, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData?.error || `Error al cargar sedes: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success && Array.isArray(data.data)) {
+          data.data.forEach((sede) => {
+            const option = document.createElement("option");
+            option.value = sede.id_sede; // Usar el id_sede como valor
+            option.textContent = sede.nombre_sede; // Mostrar el nombre de la sede
+            sedeSelect.appendChild(option);
+          });
         } else {
-            limpiarError(errorDireccion);
+          throw new Error("Formato de respuesta de sedes inválido");
         }
-
-        if (isValid) {
-            const nuevaSede = {
-                nombre: nombreInput.value,
-                direccion: direccionInput.value
-            };
-
-            try {
-                const response = await fetch("http://localhost:3000/auth/usuarios", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(nuevoUsuario)
-                });
-
-                if (!response.ok) {
-                    const errorDetails = await response.json();
-                    throw new Error(`Error al crear la sede: ${response.status} - ${errorDetails.error || 'Detalles no disponibles'}`);
-                }
-
-                alert("Usuario creada con éxito.");
-                window.location.href = "ModificacionUsuario.html"; // Redireccionar al listado
-            } catch (error) {
-                console.error("Error al crear la sede:", error);
-                alert(error.message);
-            }
+      } catch (error) {
+        console.error("Error al cargar sedes:", error);
+        mostrarMensaje(error.message, true);
+      }
+    }
+  
+    // Función para mostrar mensajes al usuario
+    function mostrarMensaje(mensaje, esError = false) {
+      errorMessage.textContent = mensaje;
+      errorMessage.style.color = esError ? "#e74c3c" : "#2ecc71";
+      errorMessage.style.display = "block";
+      setTimeout(() => {
+        errorMessage.style.display = "none";
+      }, 3000);
+    }
+  
+    // Evento para el botón de crear usuario
+    btnCrearUsuario.addEventListener("click", async (event) => {
+      event.preventDefault();
+  
+      const nombre = document.getElementById("name-user").value.trim();
+      const identificacion = document.getElementById("identification").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const rolId = rolSelect.value;
+      const sedeId = sedeSelect.value;
+  
+      if (!nombre || !identificacion || !email || !password || !rolId || !sedeId) {
+        mostrarMensaje("Todos los campos son obligatorios", true);
+        return;
+      }
+  
+      try {
+        const response = await fetch(API_URL_USUARIOS, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            nombre: nombre,
+            identificacion: identificacion,
+            email: email,
+            contrasenia: password,
+            rol: rolId, // Enviar el ID del rol seleccionado
+            sede: sedeId, // Enviar el ID de la sede seleccionada
+          }),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData?.error || `Error al crear usuario: ${response.status}`);
         }
+  
+        const data = await response.json();
+        mostrarMensaje("Usuario creado correctamente", false);
+        userForm.reset();
+        setTimeout(() => {
+          window.location.href = "../admin/ModificacionUsuario.html";
+        }, 2000);
+      } catch (error) {
+        console.error("Error al crear usuario:", error);
+        mostrarMensaje(error.message, true);
+      }
     });
-
-    function mostrarError(element, message) {
-        element.textContent = message;
-    }
-
-    function limpiarError(element) {
-        element.textContent = "";
-    }
-
-    // Función para el botón "Volver" pendiente comprobar funcionalidad
-    window.volver = function() {
-        window.location.href = "usuarios.html"; // O puedes usar window.history.back();
-    };
-});
+  
+    // Cargar los roles y las sedes al cargar la página
+    cargarRoles();
+    cargarSedes();
+  });
