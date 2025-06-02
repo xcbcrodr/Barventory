@@ -6,7 +6,8 @@ const RUTAS = {
   SEDES: "SedesActuales.html",
   MESAS: "MesasCreadas.html",
   INVENTARIO: "ProductosCreados.html",
-  LOGIN: "../index.html" // Ruta al login
+  REPORTES: "GeneraReportes.html",
+  LOGIN: "../index.html" 
 };
 
 // ========================
@@ -38,13 +39,14 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("btnSedes").addEventListener("click", () => redirigirA(RUTAS.SEDES));
   document.getElementById("btnMesas").addEventListener("click", () => redirigirA(RUTAS.MESAS));
   document.getElementById("btnInventario").addEventListener("click", () => redirigirA(RUTAS.INVENTARIO));
+  document.getElementById("btnReportes").addEventListener("click", () => redirigirA(RUTAS.REPORTES));
   document.getElementById("btnSalir").addEventListener("click", salir);
 
   // 3. (Opcional) Restringir acceso a módulos por rol
   const rol = localStorage.getItem("rol");
   if (rol !== "Administrador") {
     document.getElementById("btnUsuarios").style.display = "none";
-    // Ejemplo: Si el rol es "Cajero", ocultar Inventario
+    
     if (rol === "Cajero") {
       document.getElementById("btnInventario").style.display = "none";
     }

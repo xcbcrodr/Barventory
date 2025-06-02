@@ -77,7 +77,7 @@ function mostrarProductosEnTabla(productos) {
     tablaProductoBody.innerHTML = '';
 
     // Configuración para el formato de moneda (COP - pesos colombianos, sin decimales)
-    // Usamos 'es-CO' para español de Colombia, que usa '.' como separador de miles y ',' como decimal (aunque aquí no mostraremos decimales)
+    // Usamos 'es-CO' para español de Colombia, que usa '.' como separador de miles.
     const formatter = new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP', // Moneda colombiana
@@ -180,6 +180,8 @@ function mostrarPedidoActualEnTabla() {
         precioCell.textContent = formatter.format(item.precio * item.cantidad);
     });
 }
+
+// ... (resto del código sin cambios) ...
 
 function agregarProductoAlPedido(producto, cantidad) {
     if (isNaN(cantidad) || cantidad <= 0) {

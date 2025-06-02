@@ -58,6 +58,7 @@ body {
     border: var(--borde);
     border-radius: 5px;
     padding: 10px 15px;
+    margin-bottom: 15px; /* ¡Añade esta línea! O el valor que prefieras */
     transition: border-color 0.3s;
 }
 
@@ -77,11 +78,15 @@ body {
     outline: none;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
+    /* Asegúrate que el fondo sea transparente si tu form-group ya tiene un fondo */
+    background-color: transparent;
 }
 
 .form-group select {
     background-color: transparent;
     color: var(--texto-oscuro);
+    /* Para el select, si quieres la flecha personalizada como en el boceto de pago,
+       necesitarías añadir background-image, appearance: none, etc. como te sugerí antes. */
 }
 
 #loginForm button {
@@ -326,7 +331,7 @@ th {
 
 .opciones {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Cambiar 250px por 280px */
     gap: 20px;
     margin: 40px 0;
 }
@@ -341,6 +346,8 @@ th {
     transition: transform 0.3s, box-shadow 0.3s;
     box-shadow: var(--sombra);
     text-align: center;
+    width: 285px;   
+    height: 168.56px; 
 }
 
 .opcion:hover {
@@ -363,6 +370,19 @@ th {
     margin: 5px 0;
     opacity: 0.9;
     font-size: 0.9rem;
+}
+
+.reportes-container {
+    display: flex;             /* Habilita Flexbox */
+    justify-content: center;   /* Centra el contenido horizontalmente */
+    align-items: center;       /* Centra el contenido verticalmente (si el contenedor tiene altura) */
+    margin: 20px 0 40px 0;            /* Añade un margen arriba y abajo para separarlo de otros elementos. Ajusta este valor si es necesario. */
+}
+
+/* Opcional pero recomendado: Asegura que el botón de reportes no se estire excesivamente */
+.reportes-container .opcion {
+    max-width: 250px; /* O el mismo 'minmax(250px, 1fr)' que usas en .opciones para el grid */
+    width: 100%;     /* Permite que ocupe el ancho disponible hasta el max-width */
 }
 
 .salir {
@@ -976,3 +996,6 @@ tr.agotado .btn-agregar-pedido {
     background-color: #cccccc;
     cursor: not-allowed;
 }
+
+/* Estilos para el Módulo Cajero */
+

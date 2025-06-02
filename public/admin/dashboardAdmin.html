@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Administrador Bar-ventory</title>
-    <!--link rel="stylesheet" href="../css/styles.css" /-->
     <link rel="stylesheet" href="../css/styles2.css" />
     <link rel="stylesheet" href="../css/responsive.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
@@ -17,6 +16,7 @@
         <h1 class="titulo-centrado">Módulo Administración</h1>
         <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
         <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
+
         <div class="opciones">
             <button class="opcion" id="btnUsuarios">
                 <span class="material-icons">person</span>
@@ -41,15 +41,13 @@
                 <h3>Mesas</h3>
                 <p>Control de disponibilidad</p>
             </button>
-
-            <!--button class="opcion" id="btnReportes">
-                <span class="material-icons">assessment</span>
-                <h3>Reportes</h3>
-                <p>Configurar, generar y descargar reportes en múltiples formatos</p>
-            </button-->
-            
         </div>
-
+        <div class="reportes-container">
+            <button class="opcion" id="btnReportes">
+                <span class="material-icons">assessment</span> <h3>Reportes</h3>
+                <p>Configurar, generar y descargar reportes en múltiples formatos</p>
+            </button>
+        </div>
         <button class="salir" id="btnSalir">
             <span class="material-icons">logout</span> Salir
         </button>
@@ -66,7 +64,11 @@
         const token = localStorage.getItem("token");
         const rol = localStorage.getItem("rol");
 
-        
+        // Tu lógica de validación comentada se mantiene
+        /*if (!token || rol !== "Administrador") {
+          alert("Acceso denegado. No tienes permiso para estar aquí.");
+          window.location.href = "/index.html"; //
+        }*/
     </script>
 </body>
 

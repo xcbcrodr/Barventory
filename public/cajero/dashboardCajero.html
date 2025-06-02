@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cajero Bar-ventory</title>
-    <!--link rel="stylesheet" href="../css/styles.css" /-->
+    <title>Registro de Pagos - Bar-ventory</title>
     <link rel="stylesheet" href="../css/styles2.css" />
     <link rel="stylesheet" href="../css/responsive.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
@@ -13,58 +12,127 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1 class="titulo-centrado">Módulo Cajero</h1>
+    <div class="login-container">
+
+        <h1 class="titulo-centrado">Registro de pagos y cierre de órdenes</h1>
         <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
         <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
-        <div class="opciones">
-            <button class="opcion" id="btnUsuarios">
-                <span class="material-icons">person</span>
-                <h3>Usuarios</h3>
-                <p>Gestión de roles y usuarios</p>
-            </button>
+        <form id="paymentForm" autocomplete="off">
 
-            <button class="opcion" id="btnSedes">
-                <span class="material-icons">store</span>
-                <h3>Sedes</h3>
-                <p>Consultar, editar y eliminar sedes</p>
-            </button>
-
-            <button class="opcion" id="btnInventario">
-                <span class="material-icons">local_drink</span>
-                <h3>Inventario</h3>
-                <p>Añadir, modificar y listar productos</p>
-            </button>
-
-            <button class="opcion" id="btnMesas">
+            <div class="form-group">
                 <span class="material-icons">event_seat</span>
-                <h3>Mesas</h3>
-                <p>Control de disponibilidad</p>
+                <select id="mesa">
+                    <option value="" disabled selected>Selecciona la mesa</option>
+                </select>
+            </div>
+
+            <h3>Detalles del pedido</h3>
+            <div class="tabla-pedido">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad Solicitada</th>
+                            <th>Precio Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPedido">
+                        <tr>
+                            <td>Whisky Jack Daniels 700ml</td>
+                            <td>3</td>
+                            <td>$ 381.000</td>
+                        </tr>
+                        <tr>
+                            <td>Cerveza Aguila Light</td>
+                            <td>1</td>
+                            <td>$ 4.500</td>
+                        </tr>
+                        <tr>
+                            <td>Gaseosa Coca Cola 300ml</td>
+                            <td>2</td>
+                            <td>$ 6.000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="seccionProductosPedidos">
+
+                <div class="form-group">
+                    <span class="material-icons">payments</span>
+                    <input type="text" id="totalPedido" name="totalPedido" placeholder="Total pedido: $ 391.500"
+                        value="$ 391.500" readonly />
+                </div>
+
+                <div class="form-group">
+                    <span class="material-icons">credit_card</span>
+                    <select id="metodoPago" name="metodoPago">
+                        <option value="" disabled selected>Seleccionar método de pago</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="billeteraDigital">Billetera Digital</option>
+                        <option value="datafono">Datafono</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <span class="material-icons">attach_money</span>
+                    <input type="number" id="montoPagado" name="montoPagado" placeholder="Monto pagado"
+                        value="400000" />
+                </div>
+
+                <div class="form-group">
+                    <span class="material-icons">swap_horiz</span>
+                    <input type="text" id="cambio" name="cambio" placeholder="Cambio: $ 8.500" value="$ 8.500"
+                        readonly />
+                </div>
+
+            </div>
+        </form>
+        <p id="errorMessage" style="color: #e74c3c; display: none; margin-bottom: 10px"></p>
+
+        <div class="contenedor-botones-sede">
+            <button class="btn-crear-usuario" id="btnConfirmarPago">
+                <span class="material-icons">check_circle</span> Confirmar pago
             </button>
-            
         </div>
 
         <button class="salir" id="btnSalir">
-            <span class="material-icons">logout</span> Salir
-        </button>
+                <span class="material-icons">logout</span> Salir
+            </button>
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const totalPedidoInput = document.getElementById('totalPedido');
+                const montoPagadoInput = document.getElementById('montoPagado');
+                const cambioInput = document.getElementById('cambio');
+
+                // Establecer valores estáticos para demostración
+                totalPedidoInput.value = "$ 391.500";
+                montoPagadoInput.value = "400000";
+                cambioInput.value = "$ 8.500";
+
+                if (!totalPedidoInput.value) {
+                    totalPedidoInput.placeholder = "Total pedido: $ 391.500";
+                }
+                if (!cambioInput.value) {
+                    cambioInput.placeholder = "Cambio: $ 8.500";
+                }
+            });
+        </script>
+
+        <script src="../js/dashboardCajero.js" defer></script>
+
+        <script>
+            document.getElementById("usuarioNombre").textContent =
+                localStorage.getItem("nombreUsuario") || "Usuario";
+        </script>
+
+        <script>
+            const token = localStorage.getItem("token");
+            const rol = localStorage.getItem("rol");
+        </script>
     </div>
-
-    <script src="../js/dashboardAdmin.js"></script>
-
-    <script>
-        document.getElementById("usuarioNombre").textContent =
-            localStorage.getItem("nombreUsuario") || "Usuario";
-    </script>
-
-    <script>
-        const token = localStorage.getItem("token");
-        const rol = localStorage.getItem("rol");
-
-        /*if (!token || rol !== "Administrador") {
-          alert("Acceso denegado. No tienes permiso para estar aquí.");
-          window.location.href = "/index.html"; //
-        }*/
-    </script>
 </body>
 
 </html>
