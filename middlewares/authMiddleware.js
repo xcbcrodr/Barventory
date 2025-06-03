@@ -12,15 +12,13 @@ const authenticateToken = async (req, res, next) => {
             return res.status(401).json({ error: "Token no proporcionado." });
         }
 
-        console.log("DEBUG AUTH: Token recibido:", token ? token.substring(0, 30) + '...' : 'No token'); // Log token parcial
+        console.log("DEBUG AUTH: Token recibido:", token ? token.substring(0, 30) + '...' : 'No token'); 
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET || "tu_secreto_seguro"
         );
 
         console.log("DEBUG AUTH: Token decodificado (payload JWT):", decoded);
-
-        // Debugging the SQL query and result
         console.log("DEBUG AUTH: Ejecutando consulta SQL para id_usuario:", decoded.id);
         const userResult = await client.query(
             `SELECT u.id_usuario, u.identificacion, u.nombre, u.email, r.nombre_rol, u.idsede
@@ -40,14 +38,13 @@ const authenticateToken = async (req, res, next) => {
         const user = userResult.rows[0];
         console.log("DEBUG AUTH: Objeto 'user' de la BD antes de asignación a req.user:", user);
 
-        // Adjunta los datos completos del usuario (obtenidos de la BD) a req.user
         req.user = {
             id: user.id_usuario,
             identificacion: user.identificacion,
             nombre: user.nombre,
             email: user.email,
-            rol: user.nombre_rol, // ¡Este es el nombre del rol, e.g., 'Mesero'!
-            idsede: user.idsede // Este es el idsede obtenido de la BD
+            rol: user.nombre_rol, 
+            idsede: user.idsede 
         };
         console.log("DEBUG AUTH: req.user final después de authenticateToken (con datos de BD):", req.user);
 

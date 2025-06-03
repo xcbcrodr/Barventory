@@ -10,6 +10,8 @@ const usuariosRoutes = require('./routes/usuariosRoutes');
 const productosRoutes = require('./routes/productosRoutes');
 const mesasRoutes = require('./routes/mesasRoutes');
 const meseroRoutes = require('./routes/meseroRoutes'); 
+//const reporteRoutes = require('./routes/reporteRoutes'); 
+const cajeroRoutes = require('./routes/cajeroRoutes'); 
 const authMiddleware = require('./middlewares/authMiddleware'); 
 
 const app = express();
@@ -21,6 +23,16 @@ app.use(express.json());
 
 // ===== CONFIGURACIÓN DE RUTAS ESTÁTICAS =====
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/test-cajero', (req, res) => {
+    console.log('--- Ruta de prueba /test-cajero alcanzada ---');
+    try {
+        throw new Error('ERROR FORZADO EN RUTA DE PRUEBA: Esto debe aparecer en el servidor.');
+    } catch (error) {
+        console.error('Error capturado en ruta de prueba:', error.message);
+    }
+    res.status(200).json({ message: 'Ruta de prueba exitosa, revisa la consola del servidor para logs.' });
+});
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -34,7 +46,9 @@ app.use('/auth/sedes', authMiddleware.authenticateToken, authMiddleware.checkRol
 app.use('/auth/usuarios', authMiddleware.authenticateToken, authMiddleware.checkRole('Administrador'), usuariosRoutes);
 app.use('/auth/productos', authMiddleware.authenticateToken, authMiddleware.checkRole('Administrador'), productosRoutes);
 app.use('/auth/mesas', authMiddleware.authenticateToken, authMiddleware.checkRole('Administrador'), mesasRoutes);
+//app.use('/auth/reporte', authMiddleware.authenticateToken, authMiddleware.checkRole('Administrador'), reporteRoutes);
 app.use('/auth/mesero', meseroRoutes);
+app.use('/auth/cajero', cajeroRoutes);
 
 // ===== MANEJO DE ERRORES =====
 app.use((err, req, res, next) => {
