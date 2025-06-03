@@ -4,17 +4,23 @@ const RUTAS = {
     LOGIN: "../index.html"
 };
 
+const API_URL = 'http://localhost:3000'; // Ajusta esto a la URL base de tu backend si es diferente
+
 // ========================
 // VARIABLES GLOBALES
 // ========================
-let pedidoActualDetalles = {}; // Objeto que contendrá los detalles del pedido cargado para la mesa seleccionada
-let totalPedidoMesa = 0; // Almacenará el total a pagar del pedido seleccionado
-let idPedidoSeleccionado = null; // Almacenará el ID del pedido pendiente de la mesa seleccionada
+let pedidoActualDetalles = {};
+let totalPedidoMesa = 0;
+let idPedidoSeleccionado = null;
 
-// Formateador de moneda
 const formatter = new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+});
+
+const numberFormatter = new Intl.NumberFormat('es-CO', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
 });
@@ -38,11 +44,10 @@ function salir() {
 // FUNCIONES PARA INTERACTUAR CON EL BACKEND
 // ========================
 
-// 1. Obtener mesas con pedidos PENDIENTES
 async function obtenerMesasPendientes() {
     const token = localStorage.getItem("token");
     try {
-        const response = await fetch('/auth/cajero/mesas-pendientes', { // RUTA CORRECTA
+        const response = await fetch(`${API_URL}/auth/cajero/mesas-pendientes`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -53,7 +58,7 @@ async function obtenerMesasPendientes() {
         }
         const mesas = await response.json();
         console.log("DEBUG FRONTEND: Mesas con pedidos pendientes obtenidas:", mesas);
-        return mesas; // Cada objeto de mesa ahora contendrá también 'idPedidoActual'
+        return mesas;
     } catch (error) {
         console.error('Error al obtener las mesas con pedidos pendientes:', error);
         mostrarMensaje(`Error al cargar las mesas: ${error.message || 'Inténtalo de nuevo.'}`, 'error');
@@ -61,34 +66,54 @@ async function obtenerMesasPendientes() {
     }
 }
 
-// 2. Obtener los detalles de un pedido específico
 async function obtenerDetallePedido(idPedido) {
-    const token = localStorage.getItem("token");
+    console.log('DEBUG FRONTEND: Intentando obtener detalles para idPedido:', idPedido);
+
+    if (!idPedido || isNaN(parseInt(idPedido))) {
+        console.error('DEBUG FRONTEND: ID de pedido es nulo, undefined o no numérico antes de la llamada a la API.');
+        return null;
+    }
+
     try {
-        const response = await fetch(`/auth/cajero/pedido/${idPedido}`, { // RUTA CORRECTA
+        const token = localStorage.getItem('token');
+        console.log('DEBUG FRONTEND: Token obtenido:', token ? 'sí' : 'no', 'para pedido:', idPedido);
+        const requestUrl = `${API_URL}/auth/cajero/pedidos/${idPedido}`;
+        console.log(`DEBUG FRONTEND: URL de la API a la que se hará fetch: ${requestUrl}`);
+
+        const response = await fetch(requestUrl, {
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         });
+
+        console.log('DEBUG FRONTEND: Respuesta recibida del servidor. Status:', response.status, response.statusText);
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: 'Error desconocido al obtener detalles del pedido.' }));
-            throw new Error(`HTTP error! status: ${response.status} - ${errorData.error || errorData.message || 'Error en el servidor.'}`);
+            const errorText = await response.text();
+            console.error('DEBUG FRONTEND: Error RAW del servidor al obtener detalle del pedido. Cuerpo:', errorText);
+            let errorData;
+            try {
+                errorData = JSON.parse(errorText);
+            } catch (e) {
+                errorData = { error: `Respuesta no JSON o inválida: ${errorText.substring(0, 100)}...` };
+            }
+            throw new Error(errorData.error || `HTTP error! status: ${response.status} - ${response.statusText}`);
         }
-        const detallePedido = await response.json();
-        console.log("DEBUG FRONTEND: Detalles del pedido obtenidos:", detallePedido);
-        return detallePedido;
+        const data = await response.json();
+        console.log('DEBUG FRONTEND: Datos parseados del pedido recibidos del servidor:', data);
+        return data;
     } catch (error) {
-        console.error(`Error al obtener los detalles del pedido ${idPedido}:`, error);
-        mostrarMensaje(`Error al cargar los detalles del pedido: ${error.message || 'Inténtalo de nuevo.'}`, 'error');
-        return null;
+        console.error('DEBUG FRONTEND: Error CATCHED al obtener los detalles del pedido:', error);
+        throw error;
     }
 }
 
-// 3. Obtener métodos de pago disponibles
 async function obtenerMetodosPago() {
     const token = localStorage.getItem("token");
     try {
-        const response = await fetch('/auth/cajero/metodos-pago', { // RUTA CORRECTA
+        const response = await fetch(`${API_URL}/auth/cajero/metodos-pago`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -107,11 +132,10 @@ async function obtenerMetodosPago() {
     }
 }
 
-// 4. Procesar y confirmar el pago
 async function procesarPago(dataPago) {
     const token = localStorage.getItem("token");
     try {
-        const response = await fetch('/auth/cajero/procesar-pago', { // RUTA CORRECTA
+        const response = await fetch(`${API_URL}/auth/cajero/procesar-pago`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,10 +164,6 @@ async function procesarPago(dataPago) {
 // FUNCIONES DE RENDERIZADO Y LÓGICA DE UI
 // ========================
 
-// Función adaptada para cargar mesas con pedidos pendientes
-// ... (código anterior)
-
-// Función adaptada para cargar mesas con pedidos pendientes
 async function cargarMesasEnSelect() {
     const selectMesa = document.getElementById('mesa');
     if (!selectMesa) {
@@ -151,7 +171,7 @@ async function cargarMesasEnSelect() {
         return;
     }
 
-    const mesas = await obtenerMesasPendientes(); // Llamada a la nueva función
+    const mesas = await obtenerMesasPendientes();
     selectMesa.innerHTML = '';
 
     const defaultOption = document.createElement('option');
@@ -166,29 +186,24 @@ async function cargarMesasEnSelect() {
         document.getElementById('btnConfirmarPago').disabled = true;
     } else {
         mesas.forEach(mesa => {
-            // ¡EL PUNTO CLAVE AQUÍ!
-            // Asegúrate de que 'mesa.idPedidoActual' exista y tenga un valor válido.
-            // Si el backend envía `null` o `undefined` para idPedidoActual, aquí está el problema.
-            console.log(`DEBUG FRONTEND: Procesando mesa ${mesa.nombre}. idPedidoActual: ${mesa.idPedidoActual}`);
-            if (mesa.idPedidoActual) { // Añadir una verificación para asegurar que idPedidoActual no sea undefined/null
+            console.log(`DEBUG FRONTEND: Procesando mesa ${mesa.nombre}. idPedidoActual del backend: ${mesa.idPedidoActual}`);
+            if (mesa.idPedidoActual) {
                 const option = document.createElement('option');
-                option.value = mesa.idPedidoActual; // CAMBIO CLAVE: El valor de la opción es el id_pedido
-                option.dataset.idMesa = mesa.id; // Guardamos el id_mesa en un dataset
-                option.textContent = `Mesa ${mesa.nombre} (Pedido ID: ${mesa.idPedidoActual})`; // Mostrar número de mesa y ID de pedido
+                option.value = mesa.idPedidoActual;
+                option.dataset.idMesa = mesa.id;
+                option.textContent = `Mesa ${mesa.nombre} (Pedido ID: ${mesa.idPedidoActual})`;
                 selectMesa.appendChild(option);
             } else {
-                console.warn(`DEBUG FRONTEND: La Mesa ${mesa.nombre} no tiene un idPedidoActual válido.`);
+                console.warn(`DEBUG FRONTEND: La Mesa ${mesa.nombre} no tiene un idPedidoActual válido o está vacío. No se añadirá al select.`);
             }
         });
         document.getElementById('btnConfirmarPago').disabled = false;
     }
 }
 
-// ... (resto del código de dashboardCajero.js)
-// Función para mostrar los detalles del pedido en la tabla
 function mostrarDetallePedidoEnTabla(detallePedido) {
     const tablaPedidoBody = document.getElementById('tablaPedido');
-    tablaPedidoBody.innerHTML = ''; // Limpiar la tabla
+    tablaPedidoBody.innerHTML = '';
 
     if (!detallePedido || !detallePedido.productos || detallePedido.productos.length === 0) {
         tablaPedidoBody.innerHTML = '<tr><td colspan="3">No hay productos en este pedido.</td></tr>';
@@ -196,14 +211,15 @@ function mostrarDetallePedidoEnTabla(detallePedido) {
     }
 
     detallePedido.productos.forEach(item => {
+        console.log("DEBUG FRONTEND: Item de producto en mostrarDetallePedidoEnTabla:", item);
+        const nombreProducto = item.nombreproducto || 'Nombre no disponible';
         const row = tablaPedidoBody.insertRow();
-        row.insertCell(0).textContent = item.nombreProducto;
+        row.insertCell(0).textContent = nombreProducto;
         row.insertCell(1).textContent = item.cantidad;
         row.insertCell(2).textContent = formatter.format(item.subtotal);
     });
 }
 
-// Función para cargar los métodos de pago en el select
 async function cargarMetodosPagoEnSelect() {
     const selectMetodoPago = document.getElementById('metodoPago');
     if (!selectMetodoPago) {
@@ -225,55 +241,117 @@ async function cargarMetodosPagoEnSelect() {
         const option = document.createElement('option');
         option.value = metodo.id;
         option.textContent = metodo.nombre;
-        option.dataset.nombreMetodo = metodo.nombre; 
+        option.dataset.nombreMetodo = metodo.nombre;
         selectMetodoPago.appendChild(option);
     });
 }
 
-// Función para mostrar/ocultar los checkboxes de billetera digital
 function manejarBilleteraDigital() {
     const metodoPagoSelect = document.getElementById('metodoPago');
-    const billeteraDigitalOptionsDiv = document.getElementById('billeteraDigitalOptions'); 
-    
+    const billeteraDigitalOptionsDiv = document.getElementById('billeteraDigitalOptions');
+    const montoPagadoInput = document.getElementById('montoPagado');
+
     if (!billeteraDigitalOptionsDiv) {
         console.error("DEBUG FRONTEND: El div 'billeteraDigitalOptions' no fue encontrado.");
+        return;
+    }
+    if (!montoPagadoInput) {
+        console.error("DEBUG FRONTEND: El input 'montoPagado' no fue encontrado.");
         return;
     }
 
     const selectedOption = metodoPagoSelect.options[metodoPagoSelect.selectedIndex];
     const nombreMetodo = selectedOption ? selectedOption.dataset.nombreMetodo : '';
 
-    if (nombreMetodo === 'Billetera Digital') { 
+    const nequiCheckbox = document.getElementById('nequi');
+    const daviplataCheckbox = document.getElementById('daviplata');
+
+    // Lógica para billetera digital
+    if (nombreMetodo === 'Billetera Digital') {
         billeteraDigitalOptionsDiv.style.display = 'block';
+        montoPagadoInput.disabled = true; // Deshabilitar monto pagado para billetera digital
+        montoPagadoInput.value = ''; // Limpiar el valor si se deshabilita
+        document.getElementById('cambio').value = formatter.format(0); // Resetear el cambio
+
+        // IMPORTANTE: Los listeners de los checkboxes para desmarcar el otro
+        if (nequiCheckbox && daviplataCheckbox) {
+            nequiCheckbox.onchange = function() {
+                if (this.checked) {
+                    daviplataCheckbox.checked = false;
+                }
+            };
+            daviplataCheckbox.onchange = function() {
+                if (this.checked) {
+                    nequiCheckbox.checked = false;
+                }
+            };
+        }
     } else {
         billeteraDigitalOptionsDiv.style.display = 'none';
-        // Deseleccionar los checkboxes si se ocultan
-        const nequiCheckbox = document.getElementById('nequi');
-        const daviplataCheckbox = document.getElementById('daviplata');
         if (nequiCheckbox) nequiCheckbox.checked = false;
         if (daviplataCheckbox) daviplataCheckbox.checked = false;
+        // Quitar los event listeners para evitar comportamiento no deseado cuando no es billetera digital
+        if (nequiCheckbox) nequiCheckbox.onchange = null;
+        if (daviplataCheckbox) daviplataCheckbox.onchange = null;
+    }
+
+    // Lógica para habilitar/deshabilitar el campo de monto pagado para 'Efectivo'
+    if (nombreMetodo === 'Efectivo') {
+        montoPagadoInput.disabled = false; // Habilitar el campo
+    } else if (nombreMetodo !== 'Billetera Digital') {
+        montoPagadoInput.disabled = true;
+        montoPagadoInput.value = '';
+        document.getElementById('cambio').value = formatter.format(0);
+    }
+    // Si no hay método seleccionado (opción por defecto), también deshabilitar
+    if (!selectedOption || selectedOption.value === "") {
+        montoPagadoInput.disabled = true;
+        montoPagadoInput.value = '';
+        document.getElementById('cambio').value = formatter.format(0);
+    }
+
+    // Controlar el botón de Confirmar Pago basado en la selección del método
+    const btnConfirmarPago = document.getElementById('btnConfirmarPago');
+    if (btnConfirmarPago) {
+        if (idPedidoSeleccionado && nombreMetodo !== "") {
+            btnConfirmarPago.disabled = false;
+        } else {
+            btnConfirmarPago.disabled = true;
+        }
     }
 }
+
 
 function calcularCambio() {
     const montoPagadoInput = document.getElementById('montoPagado');
     const cambioInput = document.getElementById('cambio');
-    const totalPedidoInput = document.getElementById('totalPedido'); // Ahora es un INPUT de texto
+    const totalPedidoInput = document.getElementById('totalPedido');
 
-    const totalPedidoValor = parseFloat(totalPedidoInput.value.replace(/[^0-9,-]+/g, "").replace(",", ".")); // Limpiar formato de moneda
-    const montoPagadoValor = parseFloat(montoPagadoInput.value);
+    if (montoPagadoInput.disabled) {
+        cambioInput.value = formatter.format(0);
+        return;
+    }
+
+    const rawMontoPagado = montoPagadoInput.value.replace(/[^0-9]/g, '');
+    const montoPagadoValor = parseFloat(rawMontoPagado);
+
+    if (!isNaN(montoPagadoValor) && rawMontoPagado !== '') {
+        montoPagadoInput.value = numberFormatter.format(montoPagadoValor);
+    } else if (rawMontoPagado === '') {
+        montoPagadoInput.value = '';
+    }
+
+    const totalPedidoValor = parseFloat(totalPedidoInput.value.replace(/[^0-9,-]+/g, "").replace(",", "."));
 
     let cambio = 0;
     if (!isNaN(montoPagadoValor) && montoPagadoValor >= totalPedidoValor) {
         cambio = montoPagadoValor - totalPedidoValor;
-    } else if (isNaN(montoPagadoValor)) {
-        // Si el monto pagado no es un número, el cambio es 0
+    } else if (isNaN(montoPagadoValor) || rawMontoPagado === '') {
         cambio = 0;
     } else if (montoPagadoValor < totalPedidoValor) {
-        // Si el monto pagado es menor, el cambio es negativo (muestra cuánto falta por pagar)
         cambio = montoPagadoValor - totalPedidoValor;
     }
-    
+
     cambioInput.value = formatter.format(cambio);
 }
 
@@ -283,19 +361,15 @@ function mostrarMensaje(mensaje, tipo) {
         errorMessageElement.textContent = mensaje;
         errorMessageElement.style.color = tipo === 'error' ? '#e74c3c' : (tipo === 'warning' ? '#f39c12' : '#2ecc71');
         errorMessageElement.style.display = 'block';
-        // Ocultar después de unos segundos
         setTimeout(() => {
             errorMessageElement.style.display = 'none';
         }, 5000);
     } else {
         console.log(`[${tipo.toUpperCase()}]: ${mensaje}`);
-        alert(mensaje); // Fallback si el elemento no existe
+        alert(mensaje);
     }
 }
 
-// ========================
-// NUEVA FUNCIÓN PARA CONFIRMAR EL PAGO FINAL
-// ========================
 async function confirmarPagoFinal() {
     if (!idPedidoSeleccionado) {
         mostrarMensaje('Por favor, selecciona una mesa con un pedido pendiente.', 'warning');
@@ -304,58 +378,65 @@ async function confirmarPagoFinal() {
 
     const metodoPagoSelect = document.getElementById('metodoPago');
     const idMetodoPagoSeleccionado = metodoPagoSelect.value;
-    const nombreMetodoSeleccionado = metodoPagoSelect.options[metodoPagoSelect.selectedIndex].dataset.nombreMetodo;
+    const nombreMetodoSeleccionado = metodoPagoSelect.options[metodoPagoSelect.selectedIndex]?.dataset.nombreMetodo;
 
     const montoPagadoInput = document.getElementById('montoPagado');
-    const montoPagado = parseFloat(montoPagadoInput.value);
-
-    if (!idMetodoPagoSeleccionado || !montoPagado || isNaN(montoPagado) || montoPagado <= 0) {
-        mostrarMensaje('Por favor, selecciona un método de pago e ingresa un monto válido.', 'warning');
-        return;
-    }
-
+    let montoPagadoParaEnvio = 0;
     const totalPedido = parseFloat(document.getElementById('totalPedido').value.replace(/[^0-9,-]+/g, "").replace(",", "."));
 
-    if (montoPagado < totalPedido) {
-        mostrarMensaje('El monto pagado es menor que el total del pedido. Por favor, ajusta el monto o considera múltiples pagos.', 'warning');
+    if (!idMetodoPagoSeleccionado || idMetodoPagoSeleccionado === "") {
+        mostrarMensaje('Por favor, selecciona un método de pago.', 'warning');
         return;
     }
 
     let detalleMetodoPago = null;
-    let referenciaTransaccion = null; // Para pagos con datáfono o billetera digital
+    let referenciaTransaccion = null; // Si implementas un campo para esto en el futuro
 
-    // Lógica para billetera digital
-    if (nombreMetodoSeleccionado === 'Billetera Digital') {
+    if (nombreMetodoSeleccionado === 'Efectivo') {
+        const montoIngresadoPorCajero = parseFloat(montoPagadoInput.value.replace(/[^0-9]/g, ''));
+        if (isNaN(montoIngresadoPorCajero) || montoIngresadoPorCajero <= 0) {
+            mostrarMensaje('Para pago en Efectivo, por favor ingresa un monto válido.', 'warning');
+            return;
+        }
+        if (montoIngresadoPorCajero < totalPedido) {
+            mostrarMensaje('El monto pagado en Efectivo es menor que el total del pedido.', 'warning');
+            return;
+        }
+        montoPagadoParaEnvio = montoIngresadoPorCajero;
+        detalleMetodoPago = 'Efectivo';
+    } else if (nombreMetodoSeleccionado === 'Billetera Digital') {
         const nequiCheckbox = document.getElementById('nequi');
         const daviplataCheckbox = document.getElementById('daviplata');
 
+        if (!nequiCheckbox.checked && !daviplataCheckbox.checked) {
+            mostrarMensaje('Para Billetera Digital, por favor selecciona Nequi o Daviplata.', 'warning');
+            return;
+        }
+        // Ya validamos que solo uno esté marcado en manejarBilleteraDigital, pero por seguridad, re-validamos.
         if (nequiCheckbox.checked && daviplataCheckbox.checked) {
             mostrarMensaje('Por favor, selecciona solo Nequi o Daviplata, no ambos.', 'warning');
             return;
-        } else if (nequiCheckbox.checked) {
+        }
+
+        montoPagadoParaEnvio = totalPedido; // Para billetera digital, el monto es el total del pedido
+        if (nequiCheckbox.checked) {
             detalleMetodoPago = 'Nequi';
         } else if (daviplataCheckbox.checked) {
             detalleMetodoPago = 'Daviplata';
-        } else {
-            mostrarMensaje('Por favor, selecciona si es Nequi o Daviplata.', 'warning');
-            return;
         }
+    } else {
+        // Para cualquier otro método de pago (ej. PSE, Tarjeta de Crédito, etc.)
+        montoPagadoParaEnvio = totalPedido;
+        detalleMetodoPago = nombreMetodoSeleccionado; // Usar el nombre del método seleccionado
     }
-    // Podrías añadir lógica similar para 'Datáfono' si necesitas una referencia específica.
-    // if (nombreMetodoSeleccionado === 'Datáfono') {
-    //     referenciaTransaccion = prompt('Ingresa la referencia de la transacción del datáfono:');
-    //     if (!referenciaTransaccion) {
-    //         mostrarMensaje('La referencia de la transacción es obligatoria para pagos con datáfono.', 'warning');
-    //         return;
-    //     }
-    // }
+
 
     const dataPago = {
         idPedido: idPedidoSeleccionado,
-        pagos: [ // Esto permite manejar múltiples pagos si fuera necesario, pero por ahora solo 1
+        pagos: [
             {
                 idMetodoPago: parseInt(idMetodoPagoSeleccionado),
-                monto: montoPagado,
+                monto: montoPagadoParaEnvio,
                 detalleMetodoPago: detalleMetodoPago,
                 referenciaTransaccion: referenciaTransaccion
             }
@@ -365,7 +446,6 @@ async function confirmarPagoFinal() {
     const resultadoPago = await procesarPago(dataPago);
 
     if (resultadoPago) {
-        // Limpiar y resetear la interfaz después de un pago exitoso
         idPedidoSeleccionado = null;
         totalPedidoMesa = 0;
         pedidoActualDetalles = {};
@@ -373,27 +453,36 @@ async function confirmarPagoFinal() {
         document.getElementById('totalPedido').value = formatter.format(0);
         document.getElementById('montoPagado').value = '';
         document.getElementById('cambio').value = formatter.format(0);
-        document.getElementById('metodoPago').value = ''; // Resetear el select
+        document.getElementById('metodoPago').value = '';
         document.getElementById('tablaPedido').innerHTML = '<tr><td colspan="3">Selecciona una mesa para ver los productos.</td></tr>';
-        
-        // Ocultar la sección de opciones de billetera digital
+
         const billeteraDigitalOptionsDiv = document.getElementById('billeteraDigitalOptions');
         if (billeteraDigitalOptionsDiv) {
             billeteraDigitalOptionsDiv.style.display = 'none';
             document.getElementById('nequi').checked = false;
             document.getElementById('daviplata').checked = false;
+            // Remover los onchange events para evitar fugas de memoria o comportamientos inesperados
+            document.getElementById('nequi').onchange = null;
+            document.getElementById('daviplata').onchange = null;
         }
 
-        // Volver a cargar las mesas disponibles (para reflejar que un pedido ha sido pagado)
         await cargarMesasEnSelect();
-        
-        // Opcional: Ocultar la sección de detalles de pago si no hay más pedidos pendientes
+
         const seccionProductosPedidos = document.getElementById('seccionProductosPedidos');
         if (seccionProductosPedidos) {
-             const mesasDisponibles = await obtenerMesasPendientes(); // Re-checar si quedan mesas
-             if (mesasDisponibles.length === 0) {
-                 seccionProductosPedidos.style.display = 'none';
-             }
+            const mesasDisponibles = await obtenerMesasPendientes();
+            if (mesasDisponibles.length === 0) {
+                seccionProductosPedidos.style.display = 'none';
+            }
+        }
+        const montoPagadoInput = document.getElementById('montoPagado');
+        if (montoPagadoInput) {
+            montoPagadoInput.disabled = true;
+        }
+        // Deshabilitar botón de confirmar pago después de un pago exitoso
+        const btnConfirmarPago = document.getElementById('btnConfirmarPago');
+        if (btnConfirmarPago) {
+            btnConfirmarPago.disabled = true;
         }
     }
 }
@@ -403,80 +492,91 @@ async function confirmarPagoFinal() {
 // EVENT LISTENERS PRINCIPALES
 // ========================
 document.addEventListener("DOMContentLoaded", async function() {
-    // Cargar nombre de usuario
     const nombreUsuario = localStorage.getItem("nombreUsuario");
     if (nombreUsuario) {
         document.getElementById("usuarioNombre").textContent = nombreUsuario;
     }
 
-    // Ocultar la sección de detalles del pedido y pago al inicio
     const seccionProductosPedidos = document.getElementById('seccionProductosPedidos');
     if (seccionProductosPedidos) {
         seccionProductosPedidos.style.display = 'none';
     }
 
-    // Ocultar la sección de opciones de billetera digital al inicio
-    const billeteraDigitalOptionsDiv = document.createElement('div');
-    billeteraDigitalOptionsDiv.id = 'billeteraDigitalOptions';
-    billeteraDigitalOptionsDiv.style.display = 'none'; // Inicialmente oculto
-    billeteraDigitalOptionsDiv.innerHTML = `
-        <label>
-            <input type="checkbox" id="nequi" name="billetera" value="nequi"> Nequi
-        </label>
-        <label>
-            <input type="checkbox" id="daviplata" name="billetera" value="daviplata"> Daviplata
-        </label>
-    `;
-    // Insertar este nuevo div DENTRO del form-group del método de pago, o justo después
-    const metodoPagoGroup = document.querySelector('.form-group .material-icons ~ select#metodoPago').closest('.form-group');
-    if (metodoPagoGroup) {
-        metodoPagoGroup.insertAdjacentElement('afterend', billeteraDigitalOptionsDiv);
+    let billeteraDigitalOptionsDiv = document.getElementById('billeteraDigitalOptions');
+    if (!billeteraDigitalOptionsDiv) {
+        billeteraDigitalOptionsDiv = document.createElement('div');
+        billeteraDigitalOptionsDiv.id = 'billeteraDigitalOptions';
+        billeteraDigitalOptionsDiv.innerHTML = `
+            <label>
+                <input type="checkbox" id="nequi" name="billetera" value="nequi"> Nequi
+            </label>
+            <label>
+                <input type="checkbox" id="daviplata" name="daviplata" value="daviplata"> Daviplata
+            </label>
+        `;
+        const metodoPagoSelect = document.getElementById('metodoPago');
+        if (metodoPagoSelect && metodoPagoSelect.parentNode) {
+            metodoPagoSelect.parentNode.appendChild(billeteraDigitalOptionsDiv);
+        } else {
+            console.warn("DEBUG FRONTEND: No se pudo encontrar el elemento padre del select 'metodoPago' para insertar 'billeteraDigitalOptionsDiv'.");
+            document.body.appendChild(billeteraDigitalOptionsDiv);
+        }
+    }
+    billeteraDigitalOptionsDiv.style.display = 'none';
+
+    const montoPagadoInput = document.getElementById('montoPagado');
+    if (montoPagadoInput) {
+        montoPagadoInput.disabled = true;
+    }
+
+    // Deshabilitar el botón de confirmar pago al inicio
+    const btnConfirmarPago = document.getElementById('btnConfirmarPago');
+    if (btnConfirmarPago) {
+        btnConfirmarPago.disabled = true;
     }
 
 
-    // 1. Cargar mesas con pedidos pendientes
     await cargarMesasEnSelect();
-
-    // 2. Cargar métodos de pago
     await cargarMetodosPagoEnSelect();
 
-    // Event listener para salir
     document.getElementById("btnSalir").addEventListener("click", salir);
 
-    // Event listener para la selección de mesa
     const selectMesa = document.getElementById('mesa');
     if (selectMesa) {
         selectMesa.addEventListener('change', async function() {
-            // El valor de la opción es ahora el id_pedido, no el id_mesa
-            idPedidoSeleccionado = this.value; 
-            console.log('ID de Pedido seleccionado:', idPedidoSeleccionado);
+            idPedidoSeleccionado = this.value;
+            console.log('DEBUG FRONTEND: ID de Pedido seleccionado del dropdown:', idPedidoSeleccionado);
 
             if (idPedidoSeleccionado) {
-                // Mostrar la sección de detalles del pedido y pago
                 if (seccionProductosPedidos) {
                     seccionProductosPedidos.style.display = 'block';
                 }
-                
-                // Obtener y mostrar detalles del pedido
-                const detalle = await obtenerDetallePedido(idPedidoSeleccionado);
-                if (detalle) {
-                    pedidoActualDetalles = detalle.productos; // Guardar los productos del pedido
-                    totalPedidoMesa = detalle.totalPedido; // Guardar el total
-                    document.getElementById('totalPedido').value = formatter.format(totalPedidoMesa); // Actualizar el input total
-                    mostrarDetallePedidoEnTabla(detalle); // Renderizar la tabla de productos
 
-                    // Resetear monto pagado y cambio
-                    document.getElementById('montoPagado').value = '';
-                    document.getElementById('cambio').value = formatter.format(0);
-                    // Ocultar opciones de billetera digital si estaban visibles
-                    document.getElementById('metodoPago').value = ''; // Resetear el select
-                    manejarBilleteraDigital(); // Ocultar si es necesario
-                } else {
-                    // Si no se pudieron obtener los detalles, ocultar la sección
+                try {
+                    const detalle = await obtenerDetallePedido(idPedidoSeleccionado);
+                    if (detalle) {
+                        pedidoActualDetalles = detalle.productos;
+                        totalPedidoMesa = detalle.totalPedido;
+                        document.getElementById('totalPedido').value = formatter.format(totalPedidoMesa);
+                        mostrarDetallePedidoEnTabla(detalle);
+
+                        document.getElementById('montoPagado').value = '';
+                        document.getElementById('cambio').value = formatter.format(0);
+                        document.getElementById('metodoPago').value = '';
+                        manejarBilleteraDigital(); // Re-evaluar el estado del campo de monto pagado y opciones de billetera
+                    } else {
+                        console.warn("DEBUG FRONTEND: La función obtenerDetallePedido devolvió null o un objeto vacío.");
+                        if (seccionProductosPedidos) {
+                            seccionProductosPedidos.style.display = 'none';
+                        }
+                        mostrarMensaje('No se pudieron cargar los detalles del pedido para la mesa seleccionada.', 'error');
+                    }
+                } catch (error) {
+                    console.error("DEBUG FRONTEND: Error al obtener o procesar el detalle del pedido en el listener:", error);
+                    mostrarMensaje(`Error al cargar los detalles del pedido: ${error.message || 'Error desconocido.'}`, 'error');
                     if (seccionProductosPedidos) {
                         seccionProductosPedidos.style.display = 'none';
                     }
-                    mostrarMensaje('No se pudieron cargar los detalles del pedido para la mesa seleccionada.', 'error');
                 }
 
             } else {
@@ -487,21 +587,27 @@ document.addEventListener("DOMContentLoaded", async function() {
                 document.getElementById('totalPedido').value = formatter.format(0);
                 document.getElementById('montoPagado').value = '';
                 document.getElementById('cambio').value = formatter.format(0);
-                idPedidoSeleccionado = null; // Reiniciar el ID del pedido seleccionado
-                totalPedidoMesa = 0; // Reiniciar el total
-                pedidoActualDetalles = {}; // Limpiar detalles
+                idPedidoSeleccionado = null;
+                totalPedidoMesa = 0;
+                pedidoActualDetalles = {};
+                if (montoPagadoInput) {
+                    montoPagadoInput.disabled = true;
+                }
             }
+            // Controlar el botón de Confirmar Pago al cambiar la mesa
+            manejarBilleteraDigital(); // Llama esto para que evalúe también el botón de pago al cambiar la mesa.
         });
     }
 
-    // Event listener para el método de pago
     document.getElementById('metodoPago').addEventListener('change', manejarBilleteraDigital);
 
-    // Event listener para el monto pagado (para calcular el cambio)
-    document.getElementById('montoPagado').addEventListener('input', calcularCambio);
+    if (montoPagadoInput) {
+        montoPagadoInput.addEventListener('input', calcularCambio);
+    } else {
+        console.error("DEBUG FRONTEND: El input con id 'montoPagado' no fue encontrado.");
+    }
 
-    // Event listener para el botón de confirmar pago
     document.getElementById('btnConfirmarPago').addEventListener('click', confirmarPagoFinal);
 
-    calcularCambio(); 
+    calcularCambio(); // Realiza un cálculo inicial para asegurar que el cambio se muestre como 0
 });

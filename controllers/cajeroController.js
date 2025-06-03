@@ -1,6 +1,6 @@
+// controllers/cajeroController.js
 const client = require("../utils/db");
 
-// Este log debería aparecer al iniciar el servidor si el archivo se carga
 console.log('--- [DEBUG] cajeroController.js cargado ---');
 
 const cajeroController = {
@@ -11,18 +11,19 @@ const cajeroController = {
    */
   getMesasConPedidosPendientes: async (req, res) => {
     console.log("--- [DEBUG] INICIO: Ejecutando getMesasConPedidosPendientes ---");
-    console.log("[DEBUG] req.user en getMesasConPedidosPendientes:", req.user);
-    const idSede = req.user && req.user.idsede;
-    console.log("[DEBUG] idSede obtenido para consulta de mesas:", idSede);
 
-    if (!idSede) {
+    // Verificar si req.user y req.user.idsede existen ANTES de usarlos
+    if (!req.user || !req.user.idsede) {
       console.error(
-        "[ERROR] ID de sede no proporcionado o inválido desde el token en getMesasConPedidosPendientes."
+        "[ERROR] Acceso denegado: req.user o req.user.idsede no están definidos. Token inválido o middleware de autenticación falló en getMesasConPedidosPendientes."
       );
-      return res
-        .status(400)
-        .json({ error: "ID de sede no proporcionado o inválido." });
+      return res.status(401).json({
+        error: "Acceso no autorizado: No se pudo verificar la sede del cajero.",
+      });
     }
+
+    const idSede = req.user.idsede;
+    console.log("[DEBUG] idSede obtenido para consulta de mesas:", idSede);
 
     try {
       const query = `
@@ -74,23 +75,30 @@ const cajeroController = {
    * @param {Object} res - Objeto de respuesta de Express.
    */
   getDetallePedidoParaCajero: async (req, res) => {
-    console.log("--- [DEBUG] INICIO: Ejecutando getDetallePedidoParaCajero ---");
-    const idPedido = parseInt(req.params.id);
+    console.log("\n--- [DEBUG] INICIO: Ejecutando getDetallePedidoParaCajero ---");
+
+    // Validar req.user y req.user.idsede al inicio
+    if (!req.user || !req.user.idsede) {
+      console.error(
+        "[ERROR] Acceso denegado: req.user o req.user.idsede no están definidos en getDetallePedidoParaCajero. Token inválido o middleware falló."
+      );
+      return res.status(401).json({
+        error: "Acceso no autorizado: No se pudo verificar la sede del cajero.",
+      });
+    }
+
     const idSedeCajero = req.user.idsede;
+    const idPedido = parseInt(req.params.id);
+
+    console.log("[DEBUG] ID de Pedido recibido:", req.params.id, " (parseado a:", idPedido, ")");
+    console.log("[DEBUG] ID de Sede del Cajero (extraído del token):", idSedeCajero);
+
 
     if (isNaN(idPedido)) {
       console.error(
         "[ERROR] ID de pedido inválido o no proporcionado (NaN) en getDetallePedidoParaCajero."
       );
       return res.status(400).json({ error: "ID de pedido inválido." });
-    }
-    if (!idSedeCajero) {
-      console.error(
-        "[ERROR] idSedeCajero es inválido o no proporcionado en getDetallePedidoParaCajero."
-      );
-      return res.status(400).json({
-        error: "No se pudo determinar la sede del cajero. Reautentique.",
-      });
     }
 
     try {
@@ -107,10 +115,10 @@ const cajeroController = {
                     id_pedido = $1 AND idsede = $2 AND estado_pago = 'PENDIENTE';
             `;
       console.log(
-        "[DEBUG] Consulta SQL (getDetallePedidoParaCajero):",
+        "[DEBUG] Consulta SQL (getDetallePedidoParaCajero - pedidoQuery):",
         pedidoQuery
       );
-      console.log("[DEBUG] Parámetros (getDetallePedidoParaCajero):", [
+      console.log("[DEBUG] Parámetros (pedidoQuery):", [
         idPedido,
         idSedeCajero,
       ]);
@@ -138,20 +146,20 @@ const cajeroController = {
                     dp.idproducto AS idProducto,
                     prod.nombre_producto AS nombreProducto,
                     dp.cantidad,
-                    dp.precioUnitario AS precioUnitario,
-                    (dp.cantidad * dp.precioUnitario) AS subtotal
+                    dp.preciounitario AS precioUnitario, 
+                    (dp.cantidad * dp.preciounitario) AS subtotal 
                 FROM
                     detalle_pedido dp
                 INNER JOIN
                     producto prod ON dp.idproducto = prod.id_producto
                 WHERE
-                    dp.id_pedido = $1;
+                    dp.idpedido = $1;
             `;
       console.log(
-        "[DEBUG] Consulta SQL (detallePedido):",
+        "[DEBUG] Consulta SQL (getDetallePedidoParaCajero - detallePedidoQuery):",
         detallePedidoQuery
       );
-      console.log("[DEBUG] Parámetros (detallePedido):", [idPedido]);
+      console.log("[DEBUG] Parámetros (detallePedidoQuery):", [idPedido]);
       const detalleResult = await client.query(detallePedidoQuery, [idPedido]);
 
       console.log(
@@ -169,14 +177,10 @@ const cajeroController = {
       });
     } catch (error) {
       console.error(
-        "[ERROR] Al obtener los detalles del pedido para el cajero (capturado):",
-        error
+        "\n\n--- ERROR CRÍTICO CAPTURADO EN getDetallePedidoParaCajero ---\n"
       );
-      console.error(
-        "[ERROR] DETALLE DEL ERROR DE BASE DE DATOS (getDetallePedidoParaCajero):",
-        error.message,
-        error.stack
-      );
+      console.error("[ERROR] MENSAJE:", error.message);
+      console.error("[ERROR] STACK TRACE:", error.stack);
       res.status(500).json({
         error: "Error interno del servidor al cargar los detalles del pedido.",
       });
@@ -190,6 +194,16 @@ const cajeroController = {
    */
   getMetodosPago: async (req, res) => {
     console.log("--- [DEBUG] INICIO: Ejecutando getMetodosPago ---");
+
+    if (!req.user || !req.user.idsede) {
+        console.error(
+            "[ERROR] Acceso denegado: req.user o req.user.idsede no están definidos en getMetodosPago. Token inválido o middleware falló."
+        );
+        return res.status(401).json({
+            error: "Acceso no autorizado: No se pudo verificar la sede del cajero.",
+        });
+    }
+
     try {
       const query =
         "SELECT id_metodo_pago AS id, nombre_metodo AS nombre FROM metodo_pago WHERE activo = TRUE ORDER BY nombre_metodo";
@@ -228,7 +242,17 @@ const cajeroController = {
     );
     console.log("[DEBUG] Cuerpo de la solicitud (req.body):", req.body);
     const { idPedido, pagos } = req.body;
+
+    if (!req.user || !req.user.idsede) {
+      console.error(
+        "[ERROR] Acceso denegado: req.user o req.user.idsede no están definidos en procesarPago. Token inválido o middleware falló."
+      );
+      return res.status(401).json({
+        error: "Acceso no autorizado: No se pudo verificar la sede del cajero.",
+      });
+    }
     const idSedeCajero = req.user.idsede;
+
 
     if (
       !idPedido ||
@@ -242,19 +266,11 @@ const cajeroController = {
         .status(400)
         .json({ error: "Datos de pago incompletos o inválidos." });
     }
-    if (!idSedeCajero) {
-      console.error(
-        "[ERROR] idSedeCajero es inválido o no proporcionado en procesarPago."
-      );
-      return res.status(400).json({
-        error: "No se pudo determinar la sede del cajero. Reautentique.",
-      });
-    }
 
     let clientConnection;
 
     try {
-      clientConnection = await client.connect(); // Obtener una conexión del pool para la transacción
+      clientConnection = await client.connect(); 
       await clientConnection.query("BEGIN");
 
       const pedidoCheckQuery = `
@@ -308,9 +324,9 @@ const cajeroController = {
         totalPagadoRecibido += montoActual;
 
         const insertPagoQuery = `
-                        INSERT INTO registro_pago (id_pedido, id_metodo_pago, monto, detalle_metodo_pago, referencia_transaccion)
-                        VALUES ($1, $2, $3, $4, $5);
-                    `;
+                            INSERT INTO registro_pago (id_pedido, id_metodo_pago, monto, detalle_metodo_pago, referencia_transaccion)
+                            VALUES ($1, $2, $3, $4, $5);
+                        `;
         const insertPagoValues = [
           idPedido,
           pago.idMetodoPago,
@@ -327,7 +343,7 @@ const cajeroController = {
 
       if (totalPagadoRecibido < totalPedidoEsperado) {
         console.error(
-          `[ERROR] Monto pagado (${totalPagadoRecibido}) es menor que el total del pedido (${totalPedidoEsperado}).`
+          `[ERROR] Monto pagado (<span class="math-inline">\{totalPagadoRecibido\}\) es menor que el total del pedido \(</span>{totalPedidoEsperado}).`
         );
         throw new Error(
           `El monto pagado es insuficiente. Se esperaba un total de ${totalPedidoEsperado.toFixed(
@@ -360,6 +376,9 @@ const cajeroController = {
         await clientConnection.query("ROLLBACK");
         console.warn("[WARN] Transacción de pago revertida debido a un error.");
       }
+      console.error(
+        "\n\n--- ERROR CRÍTICO AL PROCESAR PAGO (CAPTURED) ---\n"
+      );
       console.error(
         "[ERROR] Al procesar el pago del pedido en el backend (capturado):",
         error
