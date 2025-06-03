@@ -1,6 +1,6 @@
 // controllers/meseroController.js
 
-const pool = require('../utils/db'); // IMPORTANTE: Sigue asumiendo que esto es un 'pg.Pool'
+const pool = require('../utils/db'); 
 
 exports.getMesasPorSede = async (req, res) => {
     try {
