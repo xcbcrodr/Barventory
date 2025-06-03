@@ -1,18 +1,15 @@
-// controllers/authController.js
 const client = require("../utils/db");
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET || "tu_secreto_seguro";
 
 exports.login = async (req, res) => {
-    const { identificacion, password } = req.body; // <-- CAMBIO 1: Esperamos 'identificacion'
+    const { identificacion, password } = req.body; 
     console.log('*** Inicio de la función login ***');
-    console.log('Identificacion recibida en la API:', identificacion); // <-- Log actualizado
+    console.log('Identificacion recibida en la API:', identificacion); 
     console.log('Password recibido en la API:', password); 
     try {
-        // ... (resto de tu código)
-
-        // CORRECCIÓN FINAL: Cambiar 'WHERE email = $1' a 'WHERE identificacion = $1'
+        
         const userResult = await client.query('SELECT id_usuario, identificacion, nombre, email, contrasenia, idrol, idsede FROM usuario WHERE identificacion = $1', [identificacion]);
         const user = userResult.rows[0];
 
@@ -69,7 +66,7 @@ exports.login = async (req, res) => {
             idsede: user.idsede
         });
     } catch (error) {
-        console.error('*** ERROR CATCHED EN LOGIN:', error); // <-- Confirma que este log está
+        console.error('*** ERROR CATCHED EN LOGIN:', error); 
         res.status(500).json({ error: 'Error interno del servidor en el login.' });
     }
 };

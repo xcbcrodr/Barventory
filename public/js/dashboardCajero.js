@@ -529,7 +529,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         montoPagadoInput.disabled = true;
     }
 
-    // Deshabilitar el botón de confirmar pago al inicio
     const btnConfirmarPago = document.getElementById('btnConfirmarPago');
     if (btnConfirmarPago) {
         btnConfirmarPago.disabled = true;
@@ -594,7 +593,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                     montoPagadoInput.disabled = true;
                 }
             }
-            // Controlar el botón de Confirmar Pago al cambiar la mesa
             manejarBilleteraDigital(); // Llama esto para que evalúe también el botón de pago al cambiar la mesa.
         });
     }
@@ -609,5 +607,5 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     document.getElementById('btnConfirmarPago').addEventListener('click', confirmarPagoFinal);
 
-    calcularCambio(); // Realiza un cálculo inicial para asegurar que el cambio se muestre como 0
+    calcularCambio(); 
 });

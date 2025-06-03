@@ -1,5 +1,3 @@
-// controllers/meseroController.js
-
 const pool = require('../utils/db'); 
 
 exports.getMesasPorSede = async (req, res) => {
@@ -85,12 +83,9 @@ exports.registrarPedido = async (req, res) => {
 
         let totalPedido = 0;
 
-        // Paso 1: Verificar stock y calcular total ANTES de cualquier inserción/actualización
-        console.log('Verificando stock y calculando total...');
+        console.log('Verificando stock y calculando total');
         for (const item of productos) {
-            // Consulta a la tabla 'producto':
-            // WHERE id_producto = $1 (PK de producto, con guion)
-            // AND idsede = $2 (FK a sede en producto, sin guion)
+            
             const stockCheck = await clientConnection.query(
                 'SELECT cantidad, precio_venta, nombre_producto FROM producto WHERE id_producto = $1 AND idsede = $2 FOR UPDATE', 
                 [item.idProducto, idSedeMesero]
@@ -113,32 +108,18 @@ exports.registrarPedido = async (req, res) => {
 
         // Paso 2: Insertar el encabezado del pedido
         console.log('Insertando encabezado del pedido...');
-        // Consulta a la tabla 'pedido':
-        // INSERT INTO pedido(idmesa, idsede, fecha_pedido, total_pedido)
-        // idmesa (FK a mesa, sin guion), idsede (FK a sede, sin guion)
-        // fecha_pedido (columna con guion), total_pedido (columna con guion)
-        // RETURNING id_pedido (PK de pedido, con guion)
         const pedidoInsertQuery = 'INSERT INTO pedido(idmesa, idsede, fecha_pedido, total_pedido) VALUES($1, $2, NOW(), $3) RETURNING id_pedido';
         const pedidoResult = await clientConnection.query(pedidoInsertQuery, [idMesa, idSedeMesero, totalPedido]);
         const idPedido = pedidoResult.rows[0].id_pedido; // Recuperamos id_pedido (PK, con guion)
         console.log('Encabezado del pedido insertado con ID:', idPedido);
 
-        // Paso 3: Insertar los detalles del pedido y actualizar el stock
+        
         console.log('Insertando detalles del pedido y actualizando stock...');
         for (const item of productos) {
-            // Consulta a la tabla 'detalle_pedido':
-            // INSERT INTO detalle_pedido(idpedido, idproducto, cantidad, precioUnitario)
-            // idpedido (FK a pedido, sin guion), idproducto (FK a producto, sin guion)
-            // precioUnitario (columna, sin guion)
-            const detalleInsertQuery = 'INSERT INTO detalle_pedido(idpedido, idproducto, cantidad, precioUnitario) VALUES($1, $2, $3, $4)';
             
-            // La actualización de stock en 'producto' usa:
-            // WHERE id_producto = $2 (PK de producto, con guion)
-            // AND idsede = $3 (FK a sede en producto, sin guion)
+            const detalleInsertQuery = 'INSERT INTO detalle_pedido(idpedido, idproducto, cantidad, precioUnitario) VALUES($1, $2, $3, $4)';
             const updateStockQuery = 'UPDATE producto SET cantidad = cantidad - $1 WHERE id_producto = $2 AND idsede = $3';
 
-            // Obtener el precio unitario del producto para el detalle del pedido
-            // Consulta a la tabla 'producto', usa id_producto (PK de producto, con guion)
             const productoPrecioData = await clientConnection.query('SELECT precio_venta FROM producto WHERE id_producto = $1', [item.idProducto]);
             const precioUnitario = parseFloat(productoPrecioData.rows[0].precio_venta);
 

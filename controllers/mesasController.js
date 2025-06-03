@@ -1,6 +1,5 @@
 const client = require("../utils/db");
 
-// Helper para manejo de errores (sin cambios)
 const handleDbError = (error, res, action = "procesar la solicitud") => {
     console.error(`Error al ${action}:`, error);
     res.status(500).json({
@@ -10,7 +9,6 @@ const handleDbError = (error, res, action = "procesar la solicitud") => {
     });
 };
 
-// Helper para validar IDs numéricos (sin cambios)
 const validateNumericId = (id, res) => {
     if (!/^\d+$/.test(id)) {
         res.status(400).json({
@@ -22,7 +20,6 @@ const validateNumericId = (id, res) => {
     return true;
 };
 
-// ===== OBTENER TODAS LAS MESAS 
 exports.obtenerTodasMesas = async (req, res) => {
     try {
         const result = await client.query(
@@ -34,7 +31,6 @@ exports.obtenerTodasMesas = async (req, res) => {
     }
 };
 
-// ===== OBTENER MESAS POR ID DE SEDE =====
 exports.obtenerMesasPorSede = async (req, res) => {
     const sedeId = req.params.id_sede;
     if (!validateNumericId(sedeId, res)) return;
@@ -55,7 +51,6 @@ exports.obtenerMesasPorSede = async (req, res) => {
     }
 };
 
-// ===== CREAR UNA MESA =====
 exports.crearMesa = async (req, res) => {
     const sedeId = req.params.id_sede;
     const { numero_mesa } = req.body;
@@ -90,7 +85,6 @@ exports.crearMesa = async (req, res) => {
     }
 };
 
-// ===== ELIMINAR UNA MESA =====
 exports.eliminarMesa = async (req, res) => {
     const mesaId = req.params.id_mesa;
     if (!validateNumericId(mesaId, res)) return;
@@ -120,7 +114,6 @@ exports.eliminarMesa = async (req, res) => {
     }
 };
 
-// ===== OBTENER LAS SEDES (Adaptado del usuariosController) =====
 exports.obtenerSedes = async (req, res) => {
     try {
         const sedesResult = await client.query(
