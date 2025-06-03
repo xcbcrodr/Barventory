@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generación de Reportes - Bar-ventory</title>
+    <link rel="stylesheet" href="../css/styles2.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script defer src="../js/MesasCreadas.js"></script>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="reportes-generacion-container">
+            <h1 class="titulo-centrado">Generación de Reportes y Ventas</h1>
+
+            <div class="logo-container">
+                <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+            </div>
+
+            <form id="reporteForm" autocomplete="off">
+                <div class="form-group">
+                    <span class="material-icons">calendar_today</span>
+                    <input type="date" id="fechaInicio" name="fechaInicio" value="2025-03-04" placeholder="Fecha Inicio" />
+                    </div>
+
+                <div class="form-group">
+                    <span class="material-icons">calendar_today</span>
+                    <input type="date" id="fechaFin" name="fechaFin" value="2025-03-04" placeholder="Fecha Fin" />
+                    </div>
+
+                <div class="form-group">
+                            <span class="material-icons">location_on</span>
+                            <select id="sede" name="sede">
+                                <option value="" disabled selected>Selecciona la sede</option>
+                            </select>
+                        </div>
+            </form>
+
+            <div class="exportar-reporte">
+                <h4>Exportar como</h4>
+                <div class="form-group">
+                    <span class="material-icons">save_alt</span>
+                    <select id="formatoExportacion" name="formatoExportacion">
+                        <option value="" disabled selected>Selecciona el formato</option> <option value="excel">Excel</option>
+                        <option value="csv">CSV</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </div>
+                <div class="controles-reporte">
+                    <button class="btn-crear-mesa" id="btnExportar">
+                        <span class="material-icons">download</span> Exportar
+                    </button>
+                </div>
+            </div>
+
+            <div class="boton-volver">
+                <button class="btn-nuevo" onclick="window.location.href='../admin/dashboardAdmin.html'">
+                    <span class="material-icons">arrow_back</span> Volver
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

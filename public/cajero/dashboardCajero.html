@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registro de Pagos - Bar-ventory</title>
+    <link rel="stylesheet" href="../css/styles2.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+    <div class="login-container">
+
+        <h1 class="titulo-centrado">Registro de pagos y cierre de órdenes</h1>
+        <img class="logo-unificado" src="../img/Logo Bar-ventory.jpg" alt="Logo Bar" />
+        <h2>Bienvenido/a , <span id="usuarioNombre"></span></h2>
+        <form id="paymentForm" autocomplete="off">
+
+            <div class="form-group">
+                <span class="material-icons">event_seat</span>
+                <select id="mesa">
+                    <option value="" disabled selected>Selecciona la mesa</option>
+                    </select>
+            </div>
+
+            <div id="seccionProductosPedidos"> 
+                <h3>Detalles del pedido</h3>
+                <div class="tabla-pedido">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad Solicitada</th>
+                                <th>Precio Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPedido">
+                            <tr>
+                                <td colspan="3">Selecciona una mesa para ver los productos.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <span class="material-icons">payments</span>
+                    <input type="text" id="totalPedido" name="totalPedido" placeholder="Total pedido: $0"
+                        value="" readonly /> 
+                </div>
+
+                <div class="form-group">
+                    <span class="material-icons">credit_card</span>
+                    <select id="metodoPago" name="metodoPago">
+                        <option value="" disabled selected>Selecciona método de pago</option>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <span class="material-icons">attach_money</span>
+                    <input type="number" id="montoPagado" name="montoPagado" placeholder="Monto pagado"
+                        value="" /> 
+                </div>
+
+                <div class="form-group">
+                    <span class="material-icons">swap_horiz</span>
+                    <input type="text" id="cambio" name="cambio" placeholder="Cambio: $0" value=""
+                        readonly /> 
+                </div>
+
+            </div> </form>
+        <p id="errorMessage" style="color: #e74c3c; display: none; margin-bottom: 10px"></p>
+
+        <div class="contenedor-botones-sede">
+            <button class="btn-crear-usuario" id="btnConfirmarPago">
+                <span class="material-icons">check_circle</span> Confirmar pago
+            </button>
+        </div>
+
+        <button class="salir" id="btnSalir">
+            <span class="material-icons">logout</span> Salir
+        </button>
+
+        <script src="../js/dashboardCajero.js" defer></script>
+
+        </div>
+</body>
+
+</html>
