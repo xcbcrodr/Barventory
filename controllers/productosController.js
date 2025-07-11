@@ -21,7 +21,6 @@ const validateNumericId = (id, res) => {
   return true;
 };
 
-// ===== OBTENER TODOS LOS PRODUCTOS =====
 exports.obtenerTodosProductos = async (req, res) => {
   try {
     const result = await client.query(
@@ -48,7 +47,6 @@ LEFT JOIN sede s ON p.idsede = s.id_sede;
   }
 };
 
-// ===== OBTENER UN PRODUCTO POR ID =====
 exports.obtenerProductoPorId = async (req, res) => {
   const productoId = req.params.id;
   if (!validateNumericId(productoId, res)) return;
@@ -72,7 +70,7 @@ WHERE p.id_producto = ${productoId}`;
       const result = await client.query(queryText);
 
       if (result.rows.length > 0) {
-          res.json({ success: true, data: result.rows[0] }); // Enviar respuesta exitosa
+          res.json({ success: true, data: result.rows[0] }); 
       } else {
           res
               .status(404)
@@ -86,7 +84,6 @@ WHERE p.id_producto = ${productoId}`;
   }
 };
 
-// ===== CREAR UN PRODUCTO ===== (Sin cambios relevantes para la consulta)
 exports.crearProducto = async (req, res) => {
   const { nombre_p, precio_p, precio_v, cantidad_p, proveedor_p, sede} = req.body;
   console.log("--> crearProducto: Datos recibidos:", req.body);
@@ -123,7 +120,6 @@ const values = [nombre_p, precio_p, precio_v, cantidad_p, proveedor_p, sede];
   }
 };
 
-// ===== ACTUALIZAR UN PRODUCTO =====
 exports.actualizarProducto = async (req, res) => {
   const productoId = req.params.id;
   const { nombre_p, precio_p, precio_v, cantidad_p, proveedor_p, sede } = req.body;
@@ -201,7 +197,6 @@ exports.actualizarProducto = async (req, res) => {
   }
 };
 
-// ===== ELIMINAR UN PRODUCTO ===== (Sin cambios relevantes para la consulta)
 exports.eliminarProducto = async (req, res) => {
   const productoId = req.params.id;
   if (!validateNumericId(productoId, res)) return;

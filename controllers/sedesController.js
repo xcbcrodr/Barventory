@@ -1,6 +1,5 @@
 const client = require("../utils/db");
 
-// Helper para manejo de errores
 const handleDbError = (error, res, action = "procesar la solicitud") => {
     console.error(`Error al ${action}:`, error);
     res.status(500).json({
@@ -10,7 +9,6 @@ const handleDbError = (error, res, action = "procesar la solicitud") => {
     });
 };
 
-// Helper para validar IDs numéricos
 const validateNumericId = (id, res) => {
     if (!/^\d+$/.test(id)) {
         res.status(400).json({
@@ -22,7 +20,6 @@ const validateNumericId = (id, res) => {
     return true;
 };
 
-// ===== OBTENER TODAS LAS SEDES =====
 exports.obtenerTodasSedes = async (req, res) => {
     try {
         const result = await client.query(
@@ -43,7 +40,6 @@ exports.obtenerTodasSedes = async (req, res) => {
     }
 };
 
-// ===== OBTENER UNA SEDE POR ID =====
 exports.obtenerSedePorId = async (req, res) => {
     const sedeId = req.params.id;
     if (!validateNumericId(sedeId, res)) return;
@@ -71,7 +67,6 @@ exports.obtenerSedePorId = async (req, res) => {
     }
 };
 
-// ===== CREAR UNA SEDE =====
 exports.crearSede = async (req, res) => {
     const { nombre_sede, direccion } = req.body;
 
@@ -104,7 +99,6 @@ exports.crearSede = async (req, res) => {
     }
 };
 
-// ===== ACTUALIZAR UNA SEDE =====
 exports.actualizarSede = async (req, res) => {
     const sedeId = req.params.id;
     const { nombre_sede, direccion } = req.body;
@@ -149,7 +143,6 @@ exports.actualizarSede = async (req, res) => {
     }
 };
 
-// ===== ELIMINAR UNA SEDE =====
 exports.eliminarSede = async (req, res) => {
     const sedeId = req.params.id;
     if (!validateNumericId(sedeId, res)) return;

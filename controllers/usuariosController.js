@@ -1,6 +1,5 @@
 const user = require("../utils/db");
 
-// Helper para manejo de errores (sin cambios)
 const handleDbError = (error, res, action = "procesar la solicitud") => {
   console.error(`Error al ${action}:`, error);
   res.status(500).json({
@@ -10,7 +9,6 @@ const handleDbError = (error, res, action = "procesar la solicitud") => {
   });
 };
 
-// Helper para validar IDs numéricos (sin cambios)
 const validateNumericId = (id, res) => {
   if (!/^\d+$/.test(id)) {
     res.status(400).json({
@@ -22,7 +20,6 @@ const validateNumericId = (id, res) => {
   return true;
 };
 
-// ===== OBTENER TODOS LOS USUARIOS =====
 exports.obtenerTodosUsuarios = async (req, res) => {
   try {
     const result = await user.query(
@@ -51,7 +48,6 @@ exports.obtenerTodosUsuarios = async (req, res) => {
   }
 };
 
-// ===== OBTENER UN USUARIO POR ID =====
 exports.obtenerUsuarioPorId = async (req, res) => {
   const usuarioId = req.params.id;
   if (!validateNumericId(usuarioId, res)) return;
@@ -86,7 +82,6 @@ exports.obtenerUsuarioPorId = async (req, res) => {
   }
 };
 
-// ===== CREAR UN USUARIO ===== (Sin cambios relevantes para la consulta)
 exports.crearUsuario = async (req, res) => {
   const { nombre, identificacion, email, contrasenia, sede, rol } = req.body;
 
@@ -120,7 +115,6 @@ exports.crearUsuario = async (req, res) => {
   }
 };
 
-// ===== ACTUALIZAR UN USUARIO ===== (Sin cambios relevantes para la consulta)
 exports.actualizarUsuario = async (req, res) => {
   const usuarioId = req.params.id;
   const { nombre, identificacion, email, contrasenia, rol, sede } = req.body;
@@ -169,7 +163,6 @@ exports.actualizarUsuario = async (req, res) => {
   }
 };
 
-// ===== ELIMINAR UN USUARIO ===== (Sin cambios relevantes para la consulta)
 exports.eliminarUsuario = async (req, res) => {
   const usuarioId = req.params.id;
   if (!validateNumericId(usuarioId, res)) return;

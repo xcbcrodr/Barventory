@@ -1,8 +1,6 @@
 // controllers/cajeroController.js
 const client = require("../utils/db");
 
-console.log('--- [DEBUG] cajeroController.js cargado ---');
-
 const cajeroController = {
   /**
    * Obtiene las mesas que tienen pedidos pendientes en la sede del cajero.
