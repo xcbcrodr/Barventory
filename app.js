@@ -1,4 +1,3 @@
-// app.js
 
 const express = require('express');
 const path = require('path');
@@ -8,27 +7,23 @@ require('dotenv').config();
 
 const client = require('./utils/db'); 
 
-// --- ATENCIÓN: ESTOS HANDLERS SON CRÍTICOS PARA CAPTURAR ERRORES NO MANEJADOS ---
-// Captura de errores no manejados por promesas
 process.on('unhandledRejection', (reason, promise) => {
     console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Promesa Rechazada ---\n');
     console.error('Razón:', reason);
     console.error('Promesa:', promise);
     console.error('Stack:', reason.stack || 'No stack trace disponible para la razón.');
-    // Es posible que necesites salir aquí si este error es fatal
-    // process.exit(1); 
+    
 });
 
-// Captura de excepciones no capturadas (errores síncronos)
+
 process.on('uncaughtException', (err) => {
     console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Excepción Síncrona ---\n');
     console.error('Error:', err);
     console.error('Stack:', err.stack);
-    // Es CRÍTICO salir en caso de uncaughtException para evitar estados inestables
     process.error('FORZANDO SALIDA DEL PROCESO DEBIDO A UNCAUGHT EXCEPTION.');
     process.exit(1); 
 });
-// -----------------------------------------------------------------------------
+
 
 const authRoutes = require('./routes/authRoutes');
 const sedesRoutes = require('./routes/sedesRoutes');
@@ -60,7 +55,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// ===== REGISTRO DE RUTAS DE LA API =====
 app.use('/auth', authRoutes); // Rutas de autenticación (ej. /auth/login, /auth/register)
 
 // Rutas protegidas para Administrador
@@ -97,7 +91,6 @@ app.use('/auth/cajero',
 );
 
 
-// ===== MANEJO DE ERRORES (Middleware centralizado de Express) =====
 app.use((err, req, res, next) => {
     console.error("\n\n--- ERROR CAPTURADO POR MIDDLEWARE DE EXPRESS ---\n");
     console.error("Error global de Express:", err); // Log el objeto de error completo
@@ -116,7 +109,6 @@ async function testDbConnection() {
     }
 }
 
-// ===== INICIO DEL SERVIDOR =====
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => { 
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT} - Modo: ${process.env.NODE_ENV || 'development'}`);
