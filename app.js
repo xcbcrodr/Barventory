@@ -1,4 +1,3 @@
-
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -7,24 +6,40 @@ require('dotenv').config();
 
 const client = require('./utils/db'); 
 
+
+// --- ATENCIÓN: ESTOS HANDLERS SON CRÍTICOS PARA CAPTURAR ERRORES NO MANEJADOS ---
+// Captura de errores no manejados por promesas
+
 process.on('unhandledRejection', (reason, promise) => {
     console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Promesa Rechazada ---\n');
     console.error('Razón:', reason);
     console.error('Promesa:', promise);
     console.error('Stack:', reason.stack || 'No stack trace disponible para la razón.');
-    
 });
 
+
+=======
+    // Es posible que necesites salir aquí si este error es fatal
+    // process.exit(1); 
+});
+
+// Captura de excepciones no capturadas (errores síncronos)
 
 process.on('uncaughtException', (err) => {
     console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Excepción Síncrona ---\n');
     console.error('Error:', err);
     console.error('Stack:', err.stack);
+
     process.error('FORZANDO SALIDA DEL PROCESO DEBIDO A UNCAUGHT EXCEPTION.');
     process.exit(1); 
 });
 
 
+    // Es CRÍTICO salir en caso de uncaughtException para evitar estados inestables
+    process.error('FORZANDO SALIDA DEL PROCESO DEBIDO A UNCAUGHT EXCEPTION.');
+    process.exit(1); 
+});
+// -----------------------------------------------------------------------------
 const authRoutes = require('./routes/authRoutes');
 const sedesRoutes = require('./routes/sedesRoutes');
 const usuariosRoutes = require('./routes/usuariosRoutes');
@@ -89,7 +104,6 @@ app.use('/auth/cajero',
     },
     cajeroRoutes
 );
-
 
 app.use((err, req, res, next) => {
     console.error("\n\n--- ERROR CAPTURADO POR MIDDLEWARE DE EXPRESS ---\n");
