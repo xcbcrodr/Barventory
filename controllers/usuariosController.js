@@ -1,5 +1,5 @@
 const user = require("../utils/db");
-const bcrypt = require("bcrypt"); // Añadir esta línea para importar bcrypt
+const bcrypt = require("bcrypt"); // Importación de bcrypt
 
 const handleDbError = (error, res, action = "procesar la solicitud") => {
     console.error(`Error al ${action}:`, error);
@@ -23,8 +23,7 @@ const validateNumericId = (id, res) => {
 
 exports.obtenerTodosUsuarios = async (req, res) => {
     try {
-        // NOTA: No es recomendable obtener la columna 'contrasenia' en una consulta para todos los usuarios por seguridad.
-        // Solo la necesitas para la autenticación o si realmente vas a permitir editarla.
+        // RECOMENDACIÓN DE SEGURIDAD: No obtener la columna 'contrasenia' en consultas para todos los usuarios.
         const result = await user.query(
             `SELECT
                 u.id_usuario AS id,
@@ -33,7 +32,7 @@ exports.obtenerTodosUsuarios = async (req, res) => {
                 s.nombre_sede AS sede,
                 u.identificacion AS identificacion,
                 u.email AS email,
-                -- u.contrasenia AS contrasenia, -- Considera remover esta línea si no es estrictamente necesario exponerla
+                -- u.contrasenia AS contrasenia, -- COMENTAR/ELIMINAR esta línea por seguridad
                 u.idrol AS idrol,
                 u.idsede AS idsede
             FROM usuario u
@@ -42,7 +41,7 @@ exports.obtenerTodosUsuarios = async (req, res) => {
         );
 
         console.log(
-            "Datos de usuarios enviados al frontend:",
+            "Datos de usuarios enviados al frontend (sin contraseñas):",
             JSON.stringify(result.rows, null, 2)
         );
         res.json({ success: true, data: result.rows });
@@ -69,11 +68,11 @@ exports.obtenerUsuarioPorId = async (req, res) => {
                         FROM usuario u
                         INNER JOIN rol r ON u.idrol = r.id_rol
                         INNER JOIN sede s ON u.idsede = s.id_sede
-                        WHERE u.id_usuario = ${usuarioId}`;
+                        WHERE u.id_usuario = $1`; // Usar $1 para prevenir inyección SQL
 
-        console.log("Consulta a ejecutar:", queryText);
+        console.log("Consulta a ejecutar para usuario por ID:", queryText);
 
-        const result = await user.query(queryText);
+        const result = await user.query(queryText, [usuarioId]); // Pasar el parámetro
 
         if (result.rows.length > 0) {
             res.json({ success: true, data: result.rows[0] });
@@ -97,7 +96,7 @@ exports.crearUsuario = async (req, res) => {
     }
 
     try {
-        // CAMBIO CLAVE: Hashear la contraseña antes de guardarla
+        // CAMBIO FINAL: Hashear la contraseña antes de guardarla
         const hashedPassword = await bcrypt.hash(contrasenia, 10); // 10 es el número de 'salt rounds'
 
         const result = await user.query(
@@ -111,24 +110,24 @@ exports.crearUsuario = async (req, res) => {
 
         res.status(201).json({ success: true, data: result.rows[0] });
     } catch (error) {
-        if (error.code === "23505") {
-            // Error de unicidad
-            if (error.constraint === 'usuario_identificacion_key') { // Asumiendo que tienes un unique constraint para 'identificacion'
+        if (error.code === "23505") { // Error de unicidad
+            // Determinar qué campo duplicado causó el error (requiere constraints en DB)
+            if (error.constraint === 'usuario_identificacion_key') { // Asumiendo que existe esta constraint
                 return res.status(409).json({
                     success: false,
                     error: "Ya existe un usuario con esa identificación.",
                 });
             }
-            if (error.constraint === 'usuario_email_key') { // Asumiendo que tienes un unique constraint para 'email'
+            if (error.constraint === 'usuario_email_key') { // Asumiendo que existe esta constraint
                 return res.status(409).json({
                     success: false,
                     error: "Ya existe un usuario con ese email.",
                 });
             }
-            // Fallback si no es una de las constraints específicas
+            // Fallback si no es una de las constraints específicas conocidas
             return res.status(409).json({
                 success: false,
-                error: "Ya existe un usuario con un dato duplicado (identificación o email).",
+                error: "Ya existe un usuario con un dato duplicado.",
             });
         }
         handleDbError(error, res, "crear el usuario");
@@ -142,7 +141,7 @@ exports.actualizarUsuario = async (req, res) => {
     if (!validateNumericId(usuarioId, res)) return;
 
     if (!nombre || !identificacion || !email || !sede || !rol) {
-        // Contraseña ya no es obligatoria para actualizar si no se cambia
+        // La contraseña ya no es obligatoria para actualizar si no se va a cambiar
         return res.status(400).json({
             success: false,
             error: "Nombre, identificacion, email, sede y rol son campos requeridos",
@@ -162,14 +161,14 @@ exports.actualizarUsuario = async (req, res) => {
     let queryParams = [nombre, identificacion, email, rol, sede, usuarioId];
 
     if (contrasenia) {
-        // CAMBIO CLAVE: Hashear la nueva contraseña si se proporciona
-        const hashedPassword = await bcrypt.hash(contrasenia, 10); //
+        // CAMBIO FINAL: Hashear la nueva contraseña si se proporciona
+        const hashedPassword = await bcrypt.hash(contrasenia, 10);
         queryText = `
             UPDATE Usuario
             SET nombre = $1,
                 identificacion = $2,
                 email = $3,
-                contrasenia = $7, -- Nuevo parámetro para la contraseña
+                contrasenia = $7, -- Nuevo parámetro para la contraseña hasheada
                 idrol = $4,
                 idsede = $5
             WHERE id_usuario = $6
@@ -190,8 +189,8 @@ exports.actualizarUsuario = async (req, res) => {
 
         res.json({ success: true, data: result.rows[0] });
     } catch (error) {
-        if (error.code === "23505") {
-            // Error de unicidad
+        if (error.code === "23505") { // Error de unicidad
+            // Determinar qué campo duplicado causó el error
             if (error.constraint === 'usuario_identificacion_key') {
                 return res.status(409).json({
                     success: false,
@@ -206,7 +205,7 @@ exports.actualizarUsuario = async (req, res) => {
             }
             return res.status(409).json({
                 success: false,
-                error: "Ya existe un usuario con un dato duplicado (identificación o email).",
+                error: "Ya existe un usuario con un dato duplicado.",
             });
         }
         handleDbError(error, res, `actualizar el usuario con ID ${usuarioId}`);
@@ -238,7 +237,7 @@ exports.eliminarUsuario = async (req, res) => {
             message: `Usuario con ID ${usuarioId} eliminado correctamente`,
         });
     } catch (error) {
-        if (error.code === "23503") {
+        if (error.code === "23503") { // Foreign key violation
             return res.status(409).json({
                 success: false,
                 error: "No se puede eliminar el usuario porque tiene registros asociados",

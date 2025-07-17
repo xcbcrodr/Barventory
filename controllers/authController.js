@@ -1,6 +1,6 @@
 const client = require("../utils/db");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt"); 
+const bcrypt = require("bcrypt"); // Importación de bcrypt
 
 const JWT_SECRET = process.env.JWT_SECRET || "tu_secreto_seguro";
 
@@ -8,18 +8,20 @@ exports.login = async (req, res) => {
     const { identificacion, password } = req.body;
     console.log('*** Inicio de la función login ***');
     console.log('Identificacion recibida en la API:', identificacion);
-    
+    // console.log('Password recibido en la API:', password); // POR SEGURIDAD, NO LOGUEAR EN PRODUCCIÓN
     try {
         const userResult = await client.query('SELECT id_usuario, identificacion, nombre, email, contrasenia, idrol, idsede FROM usuario WHERE identificacion = $1', [identificacion]);
         const user = userResult.rows[0];
 
         if (!user) {
-            console.log('Usuario NO encontrado en la base de datos para el email:', identificacion);
+            console.log('Usuario NO encontrado en la base de datos para la identificación:', identificacion);
             return res.status(400).json({ error: 'Credenciales inválidas.' });
         }
-        console.log('Usuario ENCONTRADO. Email del usuario en DB:', user.identificacion);
-        
-        const isMatch = await bcrypt.compare(password, user.contrasenia); 
+        console.log('Usuario ENCONTRADO. Identificación del usuario en DB:', user.identificacion);
+        // console.log('Contraseña de la DB para este usuario:', user.contrasenia); // POR SEGURIDAD, NO LOGUEAR EN PRODUCCIÓN
+
+        // CAMBIO FINAL: Usar bcrypt.compare para verificar la contraseña hasheada
+        const isMatch = await bcrypt.compare(password, user.contrasenia);
         console.log('Resultado de la comparación de contraseñas (isMatch):', isMatch);
 
         if (!isMatch) {
@@ -49,9 +51,8 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
 
-        console.log('Contenido de la respuesta JSON enviada al frontend:', {
+        console.log('Contenido de la respuesta JSON enviada al frontend (sin token y datos sensibles):', {
             message: 'Autenticación exitosa',
-            // token, // No loguear el token completo
             rol: roleName,
             nombreUsuario: user.nombre,
             idsede: user.idsede
