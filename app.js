@@ -46,7 +46,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/test-cajero', (req, res) => {
     console.log('--- Ruta de prueba /test-cajero alcanzada ---');
-    // Simular un error si quieres probar el handler global de Express
     // throw new Error('Este es un error de prueba forzado para el middleware de errores.');
     res.status(200).json({ message: 'Ruta de prueba exitosa, revisa la consola del servidor para logs.' });
 });
@@ -100,7 +99,7 @@ app.use((err, req, res, next) => {
 
 async function testDbConnection() {
     try {
-        await client.query('SELECT NOW()'); // Intenta una consulta simple
+        await client.query('SELECT NOW()'); 
         console.log('🎉 Conexión a la base de datos PostgreSQL exitosa.');
     } catch (error) {
         console.error('❌ Error de conexión inicial del Pool a PostgreSQL:', error);
@@ -112,5 +111,5 @@ async function testDbConnection() {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => { 
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT} - Modo: ${process.env.NODE_ENV || 'development'}`);
-    await testDbConnection(); // Llama a la función de prueba de DB
+    await testDbConnection(); 
 });
