@@ -6,39 +6,33 @@ require('dotenv').config();
 
 const client = require('./utils/db'); 
 
-
 // --- ATENCIÓN: ESTOS HANDLERS SON CRÍTICOS PARA CAPTURAR ERRORES NO MANEJADOS ---
 // Captura de errores no manejados por promesas
 
 process.on('unhandledRejection', (reason, promise) => {
-    console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Promesa Rechazada ---\n');
-    console.error('Razón:', reason);
-    console.error('Promesa:', promise);
-    console.error('Stack:', reason.stack || 'No stack trace disponible para la razón.');
+    console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Promesa Rechazada ---\n');
+    console.error('Razón:', reason);
+    console.error('Promesa:', promise);
+    console.error('Stack:', reason.stack || 'No stack trace disponible para la razón.');
 });
 
-
-=======
-    // Es posible que necesites salir aquí si este error es fatal
-    // process.exit(1); 
-});
 
 // Captura de excepciones no capturadas (errores síncronos)
 
 process.on('uncaughtException', (err) => {
-    console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Excepción Síncrona ---\n');
-    console.error('Error:', err);
-    console.error('Stack:', err.stack);
+    console.error('\n\n--- ERROR CRÍTICO NO MANEJADO: Excepción Síncrona ---\n');
+    console.error('Error:', err);
+    console.error('Stack:', err.stack);
 
-    process.error('FORZANDO SALIDA DEL PROCESO DEBIDO A UNCAUGHT EXCEPTION.');
-    process.exit(1); 
+    // Es CRÍTICO salir en caso de uncaughtException para evitar estados inestables
+    process.exit(1); // Esta es la línea CORRECTA y ÚNICA para salir
 });
 
 
-    // Es CRÍTICO salir en caso de uncaughtException para evitar estados inestables
-    process.error('FORZANDO SALIDA DEL PROCESO DEBIDO A UNCAUGHT EXCEPTION.');
-    process.exit(1); 
-});
+// ELIMINAR O COMENTAR ESTAS LÍNEAS DUPLICADAS Y FUERA DE LUGAR
+//     process.error('FORZANDO SALIDA DEL PROCESO DEBIDO A UNCAUGHT EXCEPTION.'); 
+//     process.exit(1); 
+
 // -----------------------------------------------------------------------------
 const authRoutes = require('./routes/authRoutes');
 const sedesRoutes = require('./routes/sedesRoutes');
@@ -60,14 +54,13 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/test-cajero', (req, res) => {
-    console.log('--- Ruta de prueba /test-cajero alcanzada ---');
-    // Simular un error si quieres probar el handler global de Express
-    // throw new Error('Este es un error de prueba forzado para el middleware de errores.');
-    res.status(200).json({ message: 'Ruta de prueba exitosa, revisa la consola del servidor para logs.' });
+    console.log('--- Ruta de prueba /test-cajero alcanzada ---');
+    // throw new Error('Este es un error de prueba forzado para el middleware de errores.');
+    res.status(200).json({ message: 'Ruta de prueba exitosa, revisa la consola del servidor para logs.' });
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.use('/auth', authRoutes); // Rutas de autenticación (ej. /auth/login, /auth/register)
@@ -85,46 +78,46 @@ app.use('/auth/mesero', authMiddleware.authenticateToken, authMiddleware.checkRo
 // Rutas protegidas para Cajero
 console.log("[DEBUG] Configurando rutas de cajero...");
 app.use('/auth/cajero', 
-    (req, res, next) => {
-        console.log(`[DEBUG] Solicitud a /auth/cajero recibida: ${req.method} ${req.originalUrl}`);
-        next();
-    },
-    authMiddleware.authenticateToken, 
-    (req, res, next) => {
-        console.log("[DEBUG] authMiddleware.authenticateToken ejecutado. req.user:", req.user);
-        if (!req.user) { // Doble chequeo aquí
-            console.error("[ERROR] authMiddleware.authenticateToken no estableció req.user. Esto es un problema.");
-        }
-        next();
-    },
-    authMiddleware.checkRole(['Cajero']),
-    (req, res, next) => {
-        console.log("[DEBUG] authMiddleware.checkRole ejecutado. Acceso concedido para Cajero.");
-        next();
-    },
-    cajeroRoutes
+    (req, res, next) => {
+        console.log(`[DEBUG] Solicitud a /auth/cajero recibida: ${req.method} ${req.originalUrl}`);
+        next();
+    },
+    authMiddleware.authenticateToken, 
+    (req, res, next) => {
+        console.log("[DEBUG] authMiddleware.authenticateToken ejecutado. req.user:", req.user);
+        if (!req.user) { // Doble chequeo aquí
+            console.error("[ERROR] authMiddleware.authenticateToken no estableció req.user. Esto es un problema.");
+        }
+        next();
+    },
+    authMiddleware.checkRole(['Cajero']),
+    (req, res, next) => {
+        console.log("[DEBUG] authMiddleware.checkRole ejecutado. Acceso concedido para Cajero.");
+        next();
+    },
+    cajeroRoutes
 );
 
 app.use((err, req, res, next) => {
-    console.error("\n\n--- ERROR CAPTURADO POR MIDDLEWARE DE EXPRESS ---\n");
-    console.error("Error global de Express:", err); // Log el objeto de error completo
-    console.error("Stack Trace:", err.stack); // Asegúrate de loguear el stack trace
-    res.status(500).json({ error: 'Error interno del servidor' });
+    console.error("\n\n--- ERROR CAPTURADO POR MIDDLEWARE DE EXPRESS ---\n");
+    console.error("Error global de Express:", err); // Log el objeto de error completo
+    console.error("Stack Trace:", err.stack); // Asegúrate de loguear el stack trace
+    res.status(500).json({ error: 'Error interno del servidor' });
 });
 
 async function testDbConnection() {
-    try {
-        await client.query('SELECT NOW()'); // Intenta una consulta simple
-        console.log('🎉 Conexión a la base de datos PostgreSQL exitosa.');
-    } catch (error) {
-        console.error('❌ Error de conexión inicial del Pool a PostgreSQL:', error);
-        console.error('Asegúrate de que PostgreSQL esté corriendo y las credenciales en .env sean correctas.');
-        process.exit(1); // Detén la aplicación si no puede conectar a la DB
-    }
+    try {
+        await client.query('SELECT NOW()'); 
+        console.log('🎉 Conexión a la base de datos PostgreSQL exitosa.');
+    } catch (error) {
+        console.error('❌ Error de conexión inicial del Pool a PostgreSQL:', error);
+        console.error('Asegúrate de que PostgreSQL esté corriendo y las credenciales en .env sean correctas.');
+        process.exit(1); // Detén la aplicación si no puede conectar a la DB
+    }
 }
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => { 
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT} - Modo: ${process.env.NODE_ENV || 'development'}`);
-    await testDbConnection(); // Llama a la función de prueba de DB
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT} - Modo: ${process.env.NODE_ENV || 'development'}`);
+    await testDbConnection(); 
 });
