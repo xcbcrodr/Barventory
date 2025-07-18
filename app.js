@@ -4,7 +4,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 
-const client = require('./utils/db'); 
+//const client = require('./utils/db'); 
+
+const pool = require('./utils/db');
+
 
 // --- ATENCIÓN: ESTOS HANDLERS SON CRÍTICOS PARA CAPTURAR ERRORES NO MANEJADOS ---
 // Captura de errores no manejados por promesas
@@ -107,7 +110,8 @@ app.use((err, req, res, next) => {
 
 async function testDbConnection() {
     try {
-        await client.query('SELECT NOW()'); 
+        //await client.query('SELECT NOW()'); 
+        await pool.query('SELECT NOW()'); 
         console.log('🎉 Conexión a la base de datos PostgreSQL exitosa.');
     } catch (error) {
         console.error('❌ Error de conexión inicial del Pool a PostgreSQL:', error);
