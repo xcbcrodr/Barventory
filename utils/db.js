@@ -17,11 +17,14 @@ const connectionConfig = isProduction
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
       port: process.env.DB_PORT,
-      ssl: false,
+      ssl: { rejectUnauthorized: false },
       connectionTimeoutMillis: 10000,
       idleTimeoutMillis: 30000,
       max: 20,
     };
+
+
+
 
 const pool = new Pool(connectionConfig);
 
